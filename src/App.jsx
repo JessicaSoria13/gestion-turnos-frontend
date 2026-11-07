@@ -2,11 +2,12 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import RutaProtegida from './components/RutaProtegida'
 import EnConstruccion from './pages/EnConstruccion'
+import Login from './pages/auth/Login'
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<EnConstruccion titulo="Ingresar" />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/registro" element={<EnConstruccion titulo="Registrarme" />} />
       <Route element={<Layout />}>
         <Route element={<RutaProtegida rolRequerido="PACIENTE" />}>

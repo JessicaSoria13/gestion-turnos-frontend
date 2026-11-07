@@ -17,6 +17,7 @@ export function cerrarSesion() {
   localStorage.removeItem("token");
   localStorage.removeItem("rol");
 }
+
 export async function apiFetch(path, opciones = {}) {
   const token = obtenerToken();
 
@@ -34,7 +35,9 @@ export async function apiFetch(path, opciones = {}) {
     headers,
   });
 
-  if (respuesta.status === 401) {
+  // Solo redirige si habia sesion (token vencido o invalido).
+  // En el login no hay token, asi el 401 llega a la pantalla y se muestra el error.
+  if (respuesta.status === 401 && token) {
     cerrarSesion();
     window.location.href = "/login";
     return;
