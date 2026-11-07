@@ -83,6 +83,7 @@ export default function Login() {
         </button>
       </form>
 
+      <p><Link to="/recuperar-contrasena">¿Olvidaste tu contraseña?</Link></p>
       <p>¿No tenés cuenta? <Link to="/registro">Registrarme</Link></p>
     </div>
   )
