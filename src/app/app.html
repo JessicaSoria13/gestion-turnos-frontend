@@ -1,0 +1,29 @@
+<div class="layout-principal">
+  <header class="barra-superior">
+    <div class="contenedor-header">
+      <h1 class="marca">NEXA Salud</h1>
+
+      @if (authService.estaAutenticado()) {
+        <nav class="navegacion">
+          @for (enlace of enlaces(); track enlace.ruta) {
+            <a [routerLink]="enlace.ruta" routerLinkActive="activo">{{ enlace.texto }}</a>
+          }
+        </nav>
+
+        <div class="sesion">
+          <span class="rol">{{ nombreRol() }}</span>
+          <button type="button" class="btn-salir" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <main class="contenido-principal">
+    <!-- Acá Angular inyecta el componente que corresponda según la ruta activa (app.routes.ts) -->
+    <router-outlet />
+  </main>
+
+  <footer class="pie-pagina">
+    <p>NEXA Salud · Gestión de turnos médicos</p>
+  </footer>
+</div>

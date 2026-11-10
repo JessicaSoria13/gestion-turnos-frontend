@@ -1,0 +1,46 @@
+<section class="tarjeta">
+  <h2>Ingresar</h2>
+
+  <form (ngSubmit)="iniciarSesion()" #formLogin="ngForm" class="formulario">
+    <div class="campo">
+      <label for="dni">DNI</label>
+      <input type="text" id="dni" name="dni" [(ngModel)]="dni" required autocomplete="username" />
+    </div>
+
+    <div class="campo">
+      <label for="contrasena">Contraseña</label>
+      <input
+        type="password"
+        id="contrasena"
+        name="contrasena"
+        [(ngModel)]="contrasena"
+        required
+        autocomplete="current-password"
+      />
+    </div>
+
+    @if (pedirRol()) {
+      <div class="campo">
+        <label for="rol">Ingresar como</label>
+        <select id="rol" name="rol" [(ngModel)]="rol" required>
+          <option value="">Elegí un rol</option>
+          <option value="PACIENTE">Paciente</option>
+          <option value="ADMINISTRADOR">Administrador</option>
+        </select>
+      </div>
+    }
+
+    @if (mensajeError()) {
+      <p class="mensaje-error">{{ mensajeError() }}</p>
+    }
+
+    <button type="submit" class="btn btn-primario" [disabled]="formLogin.invalid || cargando()">
+      {{ cargando() ? 'Ingresando...' : 'Ingresar' }}
+    </button>
+  </form>
+
+  <p class="enlaces">
+    <a routerLink="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
+  </p>
+  <p class="enlaces">¿No tenés cuenta? <a routerLink="/registro">Registrarme</a></p>
+</section>

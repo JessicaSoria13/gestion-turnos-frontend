@@ -1,0 +1,10 @@
+/* Los estilos de .tarjeta, .formulario, .campo, .btn y .mensaje-error son globales (src/styles.css)
+   para que todas las pantallas se vean igual. Acá solo lo propio del login. */
+.tarjeta {
+  max-width: 400px;
+}
+
+.enlaces {
+  margin: 12px 0 0;
+  font-size: 0.92rem;
+}
