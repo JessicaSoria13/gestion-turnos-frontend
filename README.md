@@ -10,8 +10,8 @@ https://github.com/JessicaSoria13/gestion-turnos-database
 
 ## Cómo levantarlo
 
-Requisitos: Node.js 20 o superior (`node -v`) y el backend de `gestion-turnos-database` corriendo en
-`http://localhost:8081`.
+Requisitos: Node.js 20 o superior (`node -v`) y el backend de `gestion-turnos-database` corriendo
+(por defecto en `http://localhost:8080`).
 
 ```bash
 git clone https://github.com/JessicaSoria13/gestion-turnos-frontend.git
@@ -21,9 +21,19 @@ npm start        # http://localhost:4200
 ```
 
 `npm start` ya usa el proxy de desarrollo ([proxy.conf.mjs](./proxy.conf.mjs)): las llamadas a
-`/api/...` se redirigen al backend en el puerto 8081 y se les quita el header `Origin`, así el backend
-las ve como del mismo origen y no hace falta tocar su CORS. Si cambiás el proxy, reiniciá `npm start`
-(Ctrl+C y de nuevo): el proxy no se recarga solo.
+`/api/...` se redirigen al backend y se les quita el header `Origin`, así el backend las ve como del
+mismo origen y no hace falta tocar su CORS. Si cambiás el proxy, reiniciá `npm start` (Ctrl+C y de
+nuevo): el proxy no se recarga solo.
+
+**¿Tu backend no corre en el 8080?** (por ejemplo, usás el 8081 porque XAMPP ocupa el 8080) Definí una
+sola vez la variable de entorno con tu puerto y abrí una terminal nueva:
+
+```bash
+setx BACKEND_PORT 8081
+```
+
+Si la consola de `npm start` muestra errores `ECONNREFUSED` o el login responde 502, el proxy no
+encuentra el backend: revisá que esté levantado y en el puerto correcto.
 
 ## Dónde va cada cosa
 
