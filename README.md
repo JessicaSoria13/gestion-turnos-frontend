@@ -4,12 +4,18 @@ Proyecto basado en el repositorio que pasó el profe: https://github.com/fborzi/
 (misma estructura `core/` + `features/`, interceptor JWT y guard). Para entender cada concepto
 de Angular comparado con Spring Boot, ver [GUIA_CONCEPTOS.md](./GUIA_CONCEPTOS.md).
 
+El **backend** (Spring Boot), la base de datos, la colección de Postman y `contexto.md` (reglas del
+proyecto) están en el otro repositorio:
+https://github.com/JessicaSoria13/gestion-turnos-database
+
 ## Cómo levantarlo
 
-Requisitos: Node.js 20 o superior (`node -v`) y el backend corriendo en `http://localhost:8081`.
+Requisitos: Node.js 20 o superior (`node -v`) y el backend de `gestion-turnos-database` corriendo en
+`http://localhost:8081`.
 
 ```bash
-cd frontend
+git clone https://github.com/JessicaSoria13/gestion-turnos-frontend.git
+cd gestion-turnos-frontend
 npm install      # solo la primera vez (o cuando cambie package.json)
 npm start        # http://localhost:4200
 ```
