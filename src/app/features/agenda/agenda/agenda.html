@@ -1,1 +1,88 @@
-<p>agenda works!</p>
+<section class="tarjeta">
+  <h2>Disponibilidad semanal</h2>
+
+  @if (mensajeError()) {
+    <p class="mensaje-error">{{ mensajeError() }}</p>
+  }
+  @if (mensajeExito()) {
+    <p class="mensaje-exito">{{ mensajeExito() }}</p>
+  }
+
+  @if (disponibilidades().length === 0) {
+    <p>No hay franjas cargadas.</p>
+  } @else {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Día</th>
+          <th>Desde</th>
+          <th>Hasta</th>
+          <th>Duración del turno</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of disponibilidades(); track d.id) {
+          <tr>
+            <td>{{ d.diaSemana }}</td>
+            <td>{{ hora(d.horaInicio) }}</td>
+            <td>{{ hora(d.horaFin) }}</td>
+            <td>{{ d.duracionTurnoMin }} min</td>
+            <td class="acciones">
+              <button type="button" class="btn btn-secundario" (click)="editar(d)">Editar</button>
+              <button type="button" class="btn btn-secundario" (click)="darDeBaja(d)">
+                Dar de baja
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <h3>{{ idEditando() === null ? 'Cargar una franja' : 'Editar franja' }}</h3>
+
+  <form (ngSubmit)="guardar()" #formDisponibilidad="ngForm" class="formulario fila">
+    <div class="campo">
+      <label for="dia">Día</label>
+      <select id="dia" name="dia" [(ngModel)]="diaSemana" required>
+        @for (dia of dias; track dia) {
+          <option [value]="dia">{{ dia }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="campo">
+      <label for="horaInicio">Desde</label>
+      <input type="time" id="horaInicio" name="horaInicio" [(ngModel)]="horaInicio" required />
+    </div>
+
+    <div class="campo">
+      <label for="horaFin">Hasta</label>
+      <input type="time" id="horaFin" name="horaFin" [(ngModel)]="horaFin" required />
+    </div>
+
+    <div class="campo">
+      <label for="duracion">Duración (min)</label>
+      <input
+        type="number"
+        id="duracion"
+        name="duracion"
+        [(ngModel)]="duracionTurnoMin"
+        min="5"
+        required
+      />
+    </div>
+
+    <div class="acciones">
+      <button type="submit" class="btn btn-primario" [disabled]="formDisponibilidad.invalid">
+        {{ idEditando() === null ? 'Cargar' : 'Guardar cambios' }}
+      </button>
+      @if (idEditando() !== null) {
+        <button type="button" class="btn btn-secundario" (click)="cancelarEdicion()">
+          Cancelar
+        </button>
+      }
+    </div>
+  </form>
+</section>
