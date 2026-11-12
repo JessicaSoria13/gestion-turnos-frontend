@@ -19,6 +19,39 @@ export interface LoginResponse {
   rol: Rol;
 }
 
+/** RegistroRequestDTO: crea el Usuario (rol PACIENTE) y su Paciente. `fechaNacimiento` en formato yyyy-MM-dd. */
+export interface RegistroRequest {
+  dni: string;
+  contrasena: string;
+  nombreApellido: string;
+  email?: string;
+  celular?: string;
+  fechaNacimiento: string;
+}
+
+/** RegistroResponseDTO */
+export interface RegistroResponse {
+  idUsuario: number;
+  idPaciente: number;
+  mensaje: string;
+}
+
+/** SolicitarRecuperacionRequestDTO: el backend manda un código al email (vence en 30 minutos). */
+export interface SolicitarRecuperacionRequest {
+  email: string;
+}
+
+/** ConfirmarRecuperacionRequestDTO: `token` es el código que llegó por email. */
+export interface ConfirmarRecuperacionRequest {
+  token: string;
+  contrasenaNueva: string;
+}
+
+/** MensajeResponseDTO */
+export interface MensajeResponse {
+  mensaje: string;
+}
+
 /** ErrorResponse: formato de todos los errores que devuelve el backend. */
 export interface ErrorResponse {
   timestamp: string;

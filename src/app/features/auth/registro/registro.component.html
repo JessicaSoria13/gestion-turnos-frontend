@@ -1,0 +1,122 @@
+<section class="tarjeta">
+  <h2>Registrarme</h2>
+
+  @if (mensajeExito()) {
+    <p class="mensaje-exito">{{ mensajeExito() }} Ya podés ingresar con tu DNI y contraseña.</p>
+    <a routerLink="/login" class="btn btn-primario">Ir a ingresar</a>
+  } @else {
+    <form (ngSubmit)="registrarme()" #formRegistro="ngForm" class="formulario">
+      <div class="campo">
+        <label for="dni">DNI</label>
+        <input
+          type="text"
+          id="dni"
+          name="dni"
+          [(ngModel)]="dni"
+          required
+          maxlength="10"
+          autocomplete="username"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="nombreApellido">Nombre y apellido</label>
+        <input
+          type="text"
+          id="nombreApellido"
+          name="nombreApellido"
+          [(ngModel)]="nombreApellido"
+          required
+          maxlength="100"
+          autocomplete="name"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="fechaNacimiento">Fecha de nacimiento</label>
+        <input
+          type="date"
+          id="fechaNacimiento"
+          name="fechaNacimiento"
+          [(ngModel)]="fechaNacimiento"
+          required
+          [max]="fechaMaxima"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="email">Email (opcional, sirve para recuperar la contraseña)</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          email
+          maxlength="100"
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="celular">Celular (opcional)</label>
+        <input
+          type="tel"
+          id="celular"
+          name="celular"
+          [(ngModel)]="celular"
+          maxlength="20"
+          autocomplete="tel"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="contrasena">Contraseña (mínimo 6 caracteres)</label>
+        <input
+          type="password"
+          id="contrasena"
+          name="contrasena"
+          [(ngModel)]="contrasena"
+          required
+          minlength="6"
+          maxlength="100"
+          autocomplete="new-password"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="repetirContrasena">Repetir contraseña</label>
+        <input
+          type="password"
+          id="repetirContrasena"
+          name="repetirContrasena"
+          [(ngModel)]="repetirContrasena"
+          required
+          autocomplete="new-password"
+        />
+      </div>
+
+      @if (mensajeError()) {
+        <div class="mensaje-error">
+          <p>{{ mensajeError() }}</p>
+          @if (detalles().length) {
+            <ul>
+              @for (detalle of detalles(); track detalle) {
+                <li>{{ detalle }}</li>
+              }
+            </ul>
+          }
+        </div>
+      }
+
+      <button
+        type="submit"
+        class="btn btn-primario"
+        [disabled]="formRegistro.invalid || cargando()"
+      >
+        {{ cargando() ? 'Registrando...' : 'Registrarme' }}
+      </button>
+    </form>
+
+    <p class="enlaces">¿Ya tenés cuenta? <a routerLink="/login">Ingresar</a></p>
+  }
+</section>
