@@ -1,0 +1,44 @@
+.tarjeta {
+  max-width: 900px;
+}
+
+h3 {
+  margin: 24px 0 12px;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+}
+
+.tabla th,
+.tabla td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tabla th {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.formulario.fila {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.formulario.fila .campo {
+  flex: 1 1 140px;
+}

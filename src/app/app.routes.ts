@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { EnConstruccionComponent } from './features/en-construccion/en-construccion.component';
 import { rolGuard } from './core/guards/auth.guard';
+import { Agenda } from './features/agenda/agenda/agenda';
 
 /**
  * Rutas del Frontend.
@@ -38,7 +39,7 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [rolGuard('ADMINISTRADOR')],
     children: [
-      { path: 'agenda', component: EnConstruccionComponent, data: { titulo: 'Agenda' } },
+      { path: 'agenda', component: Agenda },
       { path: 'pacientes', component: EnConstruccionComponent, data: { titulo: 'Pacientes' } },
       {
         path: 'historial',
