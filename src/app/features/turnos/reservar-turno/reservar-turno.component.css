@@ -1,0 +1,30 @@
+/* .tarjeta, .formulario, .campo, .btn, .mensaje-error y .mensaje-exito son globales (src/styles.css).
+   Acá solo lo propio de reservar turno. */
+.tarjeta {
+  max-width: 520px;
+}
+
+.etiqueta {
+  font-weight: 600;
+}
+
+.horarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.horario {
+  padding: 6px 12px;
+  border: 1px solid #1e4fa3;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.horario.elegido {
+  background: #1e4fa3;
+  color: #fff;
+}

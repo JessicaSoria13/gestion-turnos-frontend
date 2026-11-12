@@ -1,0 +1,96 @@
+<section class="tarjeta">
+  <h2>Mis turnos</h2>
+
+  @if (mensajeExito()) {
+    <p class="mensaje-exito">{{ mensajeExito() }}</p>
+  }
+  @if (mensajeError()) {
+    <p class="mensaje-error">{{ mensajeError() }}</p>
+  }
+
+  @if (turnos() === null) {
+    <p>Cargando...</p>
+  } @else if (turnos()!.length === 0) {
+    @if (!mensajeError()) {
+      <p>Todavía no tenés turnos. <a routerLink="/paciente/reservar">Reservar uno</a></p>
+    }
+  } @else {
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Médico</th>
+            <th>Cobertura</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (turno of turnos(); track turno.id) {
+            <tr>
+              <td>{{ formatearFecha(turno.fecha) }}</td>
+              <td>{{ turno.hora.slice(0, 5) }}</td>
+              <td>{{ nombreMedico()[turno.idMedico] ?? 'Médico ' + turno.idMedico }}</td>
+              <td>{{ turno.idCobertura ? 'Con cobertura' : 'Particular' }}</td>
+              <td>
+                <span class="estado" [class]="'estado ' + turno.estado.toLowerCase()">
+                  {{ turno.estado }}
+                </span>
+                @if (turno.motivoCancelacion) {
+                  <div class="motivo">{{ turno.motivoCancelacion }}</div>
+                }
+              </td>
+              <td>
+                @if (sePuedeCancelar(turno) && idCancelando() !== turno.id) {
+                  <button type="button" class="btn btn-secundario" (click)="pedirCancelacion(turno)">
+                    Cancelar
+                  </button>
+                }
+              </td>
+            </tr>
+
+            @if (idCancelando() === turno.id) {
+              <tr class="fila-cancelar">
+                <td colspan="6">
+                  <div class="campo">
+                    <label for="motivo-{{ turno.id }}">
+                      ¿Cancelar el turno del {{ formatearFecha(turno.fecha) }} a las
+                      {{ turno.hora.slice(0, 5) }}? Motivo (opcional):
+                    </label>
+                    <textarea
+                      id="motivo-{{ turno.id }}"
+                      name="motivo"
+                      [(ngModel)]="motivoCancelacion"
+                      maxlength="255"
+                      rows="2"
+                    ></textarea>
+                  </div>
+                  <div class="acciones">
+                    <button
+                      type="button"
+                      class="btn btn-primario"
+                      [disabled]="cancelando()"
+                      (click)="confirmarCancelacion(turno)"
+                    >
+                      {{ cancelando() ? 'Cancelando...' : 'Sí, cancelar turno' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secundario"
+                      [disabled]="cancelando()"
+                      (click)="volver()"
+                    >
+                      No, volver
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>
