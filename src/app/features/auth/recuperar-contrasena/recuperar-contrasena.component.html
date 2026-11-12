@@ -1,0 +1,126 @@
+<section class="tarjeta">
+  <h2>Recuperar contraseña</h2>
+
+  @switch (paso()) {
+    @case ('solicitar') {
+      <p class="ayuda">Ingresá el email con el que te registraste y te enviamos un código.</p>
+      <form (ngSubmit)="solicitarCodigo()" #formSolicitar="ngForm" class="formulario">
+        <div class="campo">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            email
+            autocomplete="email"
+          />
+        </div>
+
+        @if (mensajeError()) {
+          <div class="mensaje-error">
+            <p>{{ mensajeError() }}</p>
+            @if (detalles().length) {
+              <ul>
+                @for (detalle of detalles(); track detalle) {
+                  <li>{{ detalle }}</li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+        <button
+          type="submit"
+          class="btn btn-primario"
+          [disabled]="formSolicitar.invalid || cargando()"
+        >
+          {{ cargando() ? 'Enviando...' : 'Enviar código' }}
+        </button>
+      </form>
+    }
+
+    @case ('confirmar') {
+      @if (mensajeExito()) {
+        <p class="mensaje-exito">{{ mensajeExito() }}</p>
+      }
+      <p class="ayuda">Copiá el código del email (vence en 30 minutos) y elegí tu contraseña nueva.</p>
+
+      <form (ngSubmit)="cambiarContrasena()" #formConfirmar="ngForm" class="formulario">
+        <div class="campo">
+          <label for="codigo">Código</label>
+          <input
+            type="text"
+            id="codigo"
+            name="codigo"
+            [(ngModel)]="codigo"
+            required
+            autocomplete="one-time-code"
+          />
+        </div>
+
+        <div class="campo">
+          <label for="contrasenaNueva">Contraseña nueva (mínimo 6 caracteres)</label>
+          <input
+            type="password"
+            id="contrasenaNueva"
+            name="contrasenaNueva"
+            [(ngModel)]="contrasenaNueva"
+            required
+            minlength="6"
+            maxlength="100"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <div class="campo">
+          <label for="repetirContrasena">Repetir contraseña nueva</label>
+          <input
+            type="password"
+            id="repetirContrasena"
+            name="repetirContrasena"
+            [(ngModel)]="repetirContrasena"
+            required
+            autocomplete="new-password"
+          />
+        </div>
+
+        @if (mensajeError()) {
+          <div class="mensaje-error">
+            <p>{{ mensajeError() }}</p>
+            @if (detalles().length) {
+              <ul>
+                @for (detalle of detalles(); track detalle) {
+                  <li>{{ detalle }}</li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+        <button
+          type="submit"
+          class="btn btn-primario"
+          [disabled]="formConfirmar.invalid || cargando()"
+        >
+          {{ cargando() ? 'Guardando...' : 'Cambiar contraseña' }}
+        </button>
+      </form>
+
+      <p class="enlaces">
+        ¿No te llegó o venció?
+        <button type="button" class="link" (click)="pedirOtroCodigo()">Pedir otro código</button>
+      </p>
+    }
+
+    @case ('listo') {
+      <p class="mensaje-exito">{{ mensajeExito() }}</p>
+      <a routerLink="/login" class="btn btn-primario">Ir a ingresar</a>
+    }
+  }
+
+  @if (paso() !== 'listo') {
+    <p class="enlaces"><a routerLink="/login">Volver a ingresar</a></p>
+  }
+</section>

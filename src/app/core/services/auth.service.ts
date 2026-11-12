@@ -2,11 +2,21 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, Rol } from '../models/auth.model';
+import {
+  ConfirmarRecuperacionRequest,
+  LoginRequest,
+  LoginResponse,
+  MensajeResponse,
+  RegistroRequest,
+  RegistroResponse,
+  Rol,
+  SolicitarRecuperacionRequest,
+} from '../models/auth.model';
 
 /**
  * Servicio encargado de la Autenticación contra Spring Security (JWT).
- * Maneja el login, el guardado del token y el rol en `localStorage` y el cierre de sesión.
+ * Maneja el login, el registro, la recuperación de contraseña, el guardado del token y el rol
+ * en `localStorage` y el cierre de sesión.
  */
 @Injectable({
   providedIn: 'root',
@@ -33,6 +43,30 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(`${this.authUrl}/login`, credenciales)
       .pipe(tap((respuesta) => this.guardarSesion(respuesta.token, respuesta.rol)));
+  }
+
+  /**
+   * POST /api/v1/auth/register (201). Crea la cuenta de PACIENTE; no inicia sesión.
+   * Errores posibles: 400 (validación, con `detalles`) y 409 (ya existe un usuario activo con ese DNI).
+   */
+  registrar(datos: RegistroRequest): Observable<RegistroResponse> {
+    return this.http.post<RegistroResponse>(`${this.authUrl}/register`, datos);
+  }
+
+  /**
+   * POST /api/v1/auth/recuperar-contrasena/solicitar. El backend envía un código al email.
+   * Responde siempre el mismo mensaje (exista o no el email) para no revelar qué cuentas existen.
+   */
+  solicitarRecuperacion(datos: SolicitarRecuperacionRequest): Observable<MensajeResponse> {
+    return this.http.post<MensajeResponse>(`${this.authUrl}/recuperar-contrasena/solicitar`, datos);
+  }
+
+  /**
+   * POST /api/v1/auth/recuperar-contrasena/confirmar. Cambia la contraseña con el código del email.
+   * Error posible: 401 (código inválido, ya usado o vencido).
+   */
+  confirmarRecuperacion(datos: ConfirmarRecuperacionRequest): Observable<MensajeResponse> {
+    return this.http.post<MensajeResponse>(`${this.authUrl}/recuperar-contrasena/confirmar`, datos);
   }
 
   /** Elimina el token y el rol de localStorage para cerrar la sesión. */

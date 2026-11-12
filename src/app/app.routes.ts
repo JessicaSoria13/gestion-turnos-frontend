@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
+import { RegistroComponent } from './features/auth/registro/registro.component';
+import { RecuperarContrasenaComponent } from './features/auth/recuperar-contrasena/recuperar-contrasena.component';
 import { EnConstruccionComponent } from './features/en-construccion/en-construccion.component';
 import { rolGuard } from './core/guards/auth.guard';
 import { Agenda } from './features/agenda/agenda/agenda';
@@ -17,12 +19,8 @@ export const routes: Routes = [
 
   // Públicas
   { path: 'login', component: LoginComponent },
-  { path: 'registro', component: EnConstruccionComponent, data: { titulo: 'Registrarme' } },
-  {
-    path: 'recuperar-contrasena',
-    component: EnConstruccionComponent,
-    data: { titulo: 'Recuperar contraseña' },
-  },
+  { path: 'registro', component: RegistroComponent },
+  { path: 'recuperar-contrasena', component: RecuperarContrasenaComponent },
 
   // Paciente
   {
