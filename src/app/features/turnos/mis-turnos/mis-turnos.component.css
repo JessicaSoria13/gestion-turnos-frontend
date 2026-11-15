@@ -1,0 +1,60 @@
+/* .tarjeta, .campo, .btn, .mensaje-error y .mensaje-exito son globales (src/styles.css).
+   Acá solo lo propio de mis turnos. */
+.tarjeta {
+  max-width: 860px;
+}
+
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  border-bottom: 2px solid #1e4fa3;
+}
+
+th,
+td {
+  padding: 8px;
+  vertical-align: top;
+}
+
+tbody tr {
+  border-bottom: 1px solid #ccc;
+}
+
+.estado {
+  font-weight: 600;
+}
+
+.estado.confirmado {
+  color: #1e7d32;
+}
+
+.estado.cancelado {
+  color: #c62828;
+}
+
+.estado.atendido {
+  color: #757575;
+}
+
+.motivo {
+  font-size: 0.85em;
+  color: #757575;
+}
+
+.fila-cancelar td {
+  background: rgba(30, 79, 163, 0.06);
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}

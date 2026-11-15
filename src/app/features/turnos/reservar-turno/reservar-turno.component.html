@@ -1,0 +1,96 @@
+<section class="tarjeta">
+  <h2>Reservar turno</h2>
+
+  @if (cargandoInicio()) {
+    <p>Cargando...</p>
+  } @else if (!paciente()) {
+    <p class="mensaje-error">{{ mensajeError() }}</p>
+  } @else {
+    @if (turnoReservado(); as turno) {
+      <p class="mensaje-exito">
+        Turno reservado para el {{ formatearFecha(turno.fecha) }} a las {{ turno.hora.slice(0, 5) }}.
+        <a routerLink="/paciente/mis-turnos">Ver mis turnos</a>
+      </p>
+    }
+
+    <form (ngSubmit)="reservar()" class="formulario">
+      <div class="campo">
+        <label for="medico">Médico</label>
+        <select
+          id="medico"
+          name="medico"
+          [ngModel]="idMedico"
+          (ngModelChange)="cambiarMedico($event)"
+          required
+        >
+          <option [ngValue]="null">Elegí un médico</option>
+          @for (medico of medicos(); track medico.id) {
+            <option [ngValue]="medico.id">
+              {{ medico.nombre }} ({{ medico.especialidades.join(', ') }})
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="fecha">Fecha</label>
+        <input
+          type="date"
+          id="fecha"
+          name="fecha"
+          [ngModel]="fecha"
+          (ngModelChange)="cambiarFecha($event)"
+          [min]="hoy"
+          required
+        />
+      </div>
+
+      @if (idMedico && fecha) {
+        <div class="campo">
+          <span class="etiqueta">Horarios libres</span>
+          @if (horarios() === null) {
+            <p>Buscando horarios...</p>
+          } @else if (horarios()!.length === 0) {
+            <p>No hay horarios libres ese día. Probá con otra fecha.</p>
+          } @else {
+            <div class="horarios">
+              @for (h of horarios(); track h) {
+                <button
+                  type="button"
+                  class="horario"
+                  [class.elegido]="h === hora()"
+                  (click)="elegirHora(h)"
+                >
+                  {{ h }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <div class="campo">
+        <label for="cobertura">Cobertura</label>
+        <select id="cobertura" name="cobertura" [(ngModel)]="idCobertura">
+          <option [ngValue]="null">Particular (sin cobertura)</option>
+          @for (c of coberturas(); track c.id) {
+            <option [ngValue]="c.id">{{ textoCobertura(c) }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="motivo">Motivo de la consulta (opcional)</label>
+        <textarea id="motivo" name="motivo" [(ngModel)]="motivo" maxlength="255" rows="3"></textarea>
+      </div>
+
+      @if (mensajeError()) {
+        <p class="mensaje-error">{{ mensajeError() }}</p>
+      }
+
+      <button type="submit" class="btn btn-primario" [disabled]="!hora() || reservando()">
+        {{ textoBoton() }}
+      </button>
+    </form>
+  }
+</section>

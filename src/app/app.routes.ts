@@ -3,6 +3,8 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { EnConstruccionComponent } from './features/en-construccion/en-construccion.component';
 import { rolGuard } from './core/guards/auth.guard';
 import { Agenda } from './features/agenda/agenda/agenda';
+import { ReservarTurnoComponent } from './features/turnos/reservar-turno/reservar-turno.component';
+import { MisTurnosComponent } from './features/turnos/mis-turnos/mis-turnos.component';
 
 /**
  * Rutas del Frontend.
@@ -29,8 +31,8 @@ export const routes: Routes = [
     path: 'paciente',
     canActivate: [rolGuard('PACIENTE')],
     children: [
-      { path: 'reservar', component: EnConstruccionComponent, data: { titulo: 'Reservar turno' } },
-      { path: 'mis-turnos', component: EnConstruccionComponent, data: { titulo: 'Mis turnos' } },
+      { path: 'reservar', component: ReservarTurnoComponent },
+      { path: 'mis-turnos', component: MisTurnosComponent },
     ],
   },
 
