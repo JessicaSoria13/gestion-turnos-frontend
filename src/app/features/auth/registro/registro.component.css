@@ -1,0 +1,24 @@
+/* .tarjeta, .formulario, .campo, .btn, .mensaje-error y .mensaje-exito son globales (src/styles.css).
+   Acá solo lo propio del registro. */
+.tarjeta {
+  max-width: 440px;
+}
+
+.enlaces {
+  margin: 12px 0 0;
+  font-size: 0.92rem;
+}
+
+.mensaje-error p {
+  margin: 0;
+}
+
+.mensaje-error ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}

@@ -47,6 +47,9 @@ src/app/
 │   └── utils/errores.ts       # mensajeDeError(): muestra el "mensaje" del ErrorResponse del backend
 ├── features/                  # Pantallas, una carpeta por módulo
 │   ├── auth/login/            # Login con DNI, contraseña y elección de rol
+│   ├── auth/registro/         # Registro de paciente (POST /auth/register)
+│   ├── auth/recuperar-contrasena/  # Pedir código por email y cambiar la contraseña
+│   ├── agenda/                # Agenda del administrador (disponibilidad semanal)
 │   └── en-construccion/       # Pantalla provisoria para rutas que todavía no existen
 ├── app.ts / app.html          # Encabezado con menú según el rol y Cerrar sesión
 ├── app.routes.ts              # Rutas: /paciente/... solo PACIENTE, /admin/... solo ADMINISTRADOR
