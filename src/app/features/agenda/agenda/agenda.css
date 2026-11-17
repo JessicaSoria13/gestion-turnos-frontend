@@ -42,3 +42,25 @@ h3 {
 .formulario.fila .campo {
   flex: 1 1 140px;
 }
+
+
+/* Parte 2: bloqueos */
+.tarjeta + .tarjeta {
+  margin-top: 24px;
+}
+
+.ayuda {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.formulario.fila .campo.motivo {
+  flex: 2 1 240px;
+}
+/* Mensajes de cada parte, debajo de su formulario */
+.formulario + .mensaje-error,
+.formulario + .mensaje-exito,
+.formulario + .mensaje-exito + .mensaje-error {
+  margin-top: 16px;
+}

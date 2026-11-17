@@ -1,12 +1,10 @@
+<!-- Errores generales (ej.: no se pudo cargar el médico). Los de cada parte se muestran junto a su formulario -->
+@if (seccionMensaje() === 'general' && mensajeError()) {
+  <p class="mensaje-error">{{ mensajeError() }}</p>
+}
+
 <section class="tarjeta">
   <h2>Disponibilidad semanal</h2>
-
-  @if (mensajeError()) {
-    <p class="mensaje-error">{{ mensajeError() }}</p>
-  }
-  @if (mensajeExito()) {
-    <p class="mensaje-exito">{{ mensajeExito() }}</p>
-  }
 
   @if (disponibilidades().length === 0) {
     <p>No hay franjas cargadas.</p>
@@ -85,4 +83,104 @@
       }
     </div>
   </form>
+
+  @if (seccionMensaje() === 'disponibilidad') {
+    @if (mensajeError()) {
+      <p class="mensaje-error">{{ mensajeError() }}</p>
+    }
+    @if (mensajeExito()) {
+      <p class="mensaje-exito">{{ mensajeExito() }}</p>
+    }
+  }
+</section>
+
+<section class="tarjeta">
+  <h2>Bloqueos</h2>
+  <p class="ayuda">
+    Días en que el médico no atiende (vacaciones, feriados, licencias). Al cargar un bloqueo se
+    cancelan los turnos confirmados de esas fechas.
+  </p>
+
+  @if (bloqueos().length === 0) {
+    <p>No hay bloqueos cargados.</p>
+  } @else {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Desde</th>
+          <th>Hasta</th>
+          <th>Motivo</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (b of bloqueos(); track b.id) {
+          <tr>
+            <td>{{ formatearFecha(b.fechaDesde) }}</td>
+            <td>{{ formatearFecha(b.fechaHasta) }}</td>
+            <td>{{ b.motivo }}</td>
+            <td class="acciones">
+              <button type="button" class="btn btn-secundario" (click)="darDeBajaBloqueo(b)">
+                Dar de baja
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <h3>Cargar un bloqueo</h3>
+
+  <form (ngSubmit)="guardarBloqueo()" #formBloqueo="ngForm" class="formulario fila">
+    <div class="campo">
+      <label for="fechaDesde">Desde</label>
+      <app-campo-fecha
+        idInput="fechaDesde"
+        name="fechaDesde"
+        [(ngModel)]="fechaDesde"
+        [min]="hoy"
+        required
+      />
+    </div>
+
+    <div class="campo">
+      <label for="fechaHasta">Hasta</label>
+      <app-campo-fecha
+        idInput="fechaHasta"
+        name="fechaHasta"
+        [(ngModel)]="fechaHasta"
+        [min]="fechaDesde"
+        required
+      />
+    </div>
+
+    <div class="campo motivo">
+      <label for="motivoBloqueo">Motivo</label>
+      <input
+        type="text"
+        id="motivoBloqueo"
+        name="motivoBloqueo"
+        [(ngModel)]="motivoBloqueo"
+        maxlength="100"
+        placeholder="Ej.: vacaciones"
+        required
+      />
+    </div>
+
+    <div class="acciones">
+      <button type="submit" class="btn btn-primario" [disabled]="formBloqueo.invalid">
+        Bloquear
+      </button>
+    </div>
+  </form>
+
+  @if (seccionMensaje() === 'bloqueos') {
+    @if (mensajeError()) {
+      <p class="mensaje-error">{{ mensajeError() }}</p>
+    }
+    @if (mensajeExito()) {
+      <p class="mensaje-exito">{{ mensajeExito() }}</p>
+    }
+  }
 </section>

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CampoFecha } from '../../../shared/campo-fecha/campo-fecha';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegistroRequest } from '../../../core/models/auth.model';
 import { detallesDeError, mensajeDeError } from '../../../core/utils/errores';
@@ -12,7 +13,7 @@ import { detallesDeError, mensajeDeError } from '../../../core/utils/errores';
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, CampoFecha],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css',
 })

@@ -34,9 +34,8 @@
 
       <div class="campo">
         <label for="fecha">Fecha</label>
-        <input
-          type="date"
-          id="fecha"
+        <app-campo-fecha
+          idInput="fecha"
           name="fecha"
           [ngModel]="fecha"
           (ngModelChange)="cambiarFecha($event)"
