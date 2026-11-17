@@ -1,0 +1,35 @@
+<div class="campo-fecha">
+  <input
+    type="text"
+    [id]="idInput()"
+    inputmode="numeric"
+    placeholder="dd/mm/aaaa"
+    maxlength="10"
+    autocomplete="off"
+    [value]="texto()"
+    [disabled]="deshabilitado()"
+    (input)="alEscribir($event)"
+    (blur)="alSalir()"
+  />
+  <button
+    type="button"
+    class="boton-calendario"
+    aria-label="Abrir calendario"
+    [disabled]="deshabilitado()"
+    (click)="abrirCalendario()"
+  >
+    📅
+  </button>
+  <!-- Input nativo oculto: solo se usa para abrir el calendario -->
+  <input
+    #selector
+    type="date"
+    class="selector-oculto"
+    tabindex="-1"
+    aria-hidden="true"
+    [value]="valorIso()"
+    [min]="min() ?? ''"
+    [max]="max() ?? ''"
+    (change)="alElegir($event)"
+  />
+</div>

@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CampoFecha } from '../../../shared/campo-fecha/campo-fecha';
 import { forkJoin, switchMap } from 'rxjs';
 import { Medico, MedicoService } from '../../../core/services/medico.service';
 import { DisponibilidadService } from '../../../core/services/disponibilidad.service';
@@ -23,7 +24,7 @@ const DIAS: DiaSemana[] = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 
 @Component({
   selector: 'app-reservar-turno',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, CampoFecha],
   templateUrl: './reservar-turno.component.html',
   styleUrl: './reservar-turno.component.css',
 })
