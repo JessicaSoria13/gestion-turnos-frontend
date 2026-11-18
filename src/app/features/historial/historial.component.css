@@ -1,0 +1,98 @@
+/* .tarjeta, .campo, .btn y .mensaje-error son globales (src/styles.css).
+   Acá solo lo propio del historial. */
+.tarjeta {
+  max-width: 900px;
+}
+
+.selector {
+  max-width: 420px;
+  margin-bottom: 16px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+}
+
+.tabla th,
+.tabla td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+
+.tabla th {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.tabla tr.elegido td {
+  background: #e7f1fb;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.estado {
+  font-weight: 600;
+}
+
+.estado.confirmado {
+  color: #1e7d32;
+}
+
+.estado.cancelado {
+  color: #c62828;
+}
+
+.estado.atendido {
+  color: #757575;
+}
+
+.motivo {
+  font-size: 0.85em;
+  color: #757575;
+}
+
+.detalle {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.detalle-encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detalle-encabezado h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.diagnostico h4 {
+  margin: 16px 0 8px;
+  font-size: 0.95rem;
+  color: #1e4fa3;
+}
+
+.diagnostico ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.estado-tratamiento {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #f0efec;
+  color: #475569;
+}

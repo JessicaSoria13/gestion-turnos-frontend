@@ -8,6 +8,7 @@ import { Agenda } from './features/agenda/agenda/agenda';
 import { ReservarTurnoComponent } from './features/turnos/reservar-turno/reservar-turno.component';
 import { MisTurnosComponent } from './features/turnos/mis-turnos/mis-turnos.component';
 
+import { HistorialComponent } from './features/historial/historial.component';
 /**
  * Rutas del Frontend.
  * - Públicas: /login, /registro, /recuperar-contrasena.
@@ -41,11 +42,7 @@ export const routes: Routes = [
     children: [
       { path: 'agenda', component: Agenda },
       { path: 'pacientes', component: EnConstruccionComponent, data: { titulo: 'Pacientes' } },
-      {
-        path: 'historial',
-        component: EnConstruccionComponent,
-        data: { titulo: 'Historial clínico' },
-      },
+      { path: 'historial', component: HistorialComponent },
     ],
   },
 

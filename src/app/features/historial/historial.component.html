@@ -1,0 +1,102 @@
+<section class="tarjeta">
+  <h2>Historial clínico</h2>
+
+  @if (mensajeError()) {
+    <p class="mensaje-error">{{ mensajeError() }}</p>
+  }
+
+  <div class="campo selector">
+    <label for="paciente">Paciente</label>
+    <select id="paciente" name="paciente" [(ngModel)]="idPaciente" (ngModelChange)="cargarTurnos()">
+      <option [ngValue]="null" disabled>Elegí un paciente</option>
+      @for (p of pacientes(); track p.id) {
+        <option [ngValue]="p.id">{{ p.nombreApellido }} (DNI {{ p.dni }})</option>
+      }
+    </select>
+  </div>
+
+  @if (idPaciente !== null) {
+    @if (turnos() === null) {
+      <p>Cargando...</p>
+    } @else if (turnos()!.length === 0) {
+      <p>Este paciente todavía no tiene turnos.</p>
+    } @else {
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Motivo</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of turnos(); track t.id) {
+            <tr [class.elegido]="turnoAbierto()?.id === t.id">
+              <td>{{ formatearFecha(t.fecha) }}</td>
+              <td>{{ t.hora.slice(0, 5) }}</td>
+              <td>{{ t.motivoConsulta || '-' }}</td>
+              <td>
+                <span [class]="'estado ' + t.estado.toLowerCase()">{{ t.estado }}</span>
+                @if (t.motivoCancelacion) {
+                  <div class="motivo">{{ t.motivoCancelacion }}</div>
+                }
+              </td>
+              <td class="acciones">
+                @if (t.estado === 'ATENDIDO') {
+                  <button type="button" class="btn btn-secundario" (click)="verConsulta(t)">
+                    Ver consulta
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+
+  @if (turnoAbierto(); as turno) {
+    <div class="detalle">
+      <div class="detalle-encabezado">
+        <h3>Consulta del {{ formatearFecha(turno.fecha) }} a las {{ turno.hora.slice(0, 5) }}</h3>
+        <button type="button" class="btn btn-secundario" (click)="cerrarConsulta()">Cerrar</button>
+      </div>
+
+      @if (cargandoConsulta()) {
+        <p>Cargando...</p>
+      } @else if (consulta() === null) {
+        <p>Este turno figura como atendido, pero no tiene una consulta registrada.</p>
+      } @else {
+        <p>
+          <strong>Observaciones:</strong> {{ consulta()!.observaciones || 'Sin observaciones' }}
+        </p>
+
+        @if (diagnosticos().length === 0) {
+          <p>La consulta no tiene diagnósticos.</p>
+        }
+        @for (d of diagnosticos(); track d.diagnostico.id) {
+          <div class="diagnostico">
+            <h4>Diagnóstico: {{ d.diagnostico.descripcion }}</h4>
+            @if (d.tratamientos.length === 0) {
+              <p>Sin tratamientos.</p>
+            } @else {
+              <ul>
+                @for (tr of d.tratamientos; track tr.id) {
+                  <li>
+                    {{ tr.descripcion }}
+                    @if (tr.duracion) {
+                      · {{ tr.duracion }}
+                    }
+                    <span class="estado-tratamiento">{{ textoEstado(tr.estado) }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+</section>
