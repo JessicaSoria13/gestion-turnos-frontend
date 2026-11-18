@@ -1,0 +1,112 @@
+<section class="tarjeta">
+  <h2>Pacientes</h2>
+
+  @if (mensajeError()) {
+    <p class="mensaje-error">{{ mensajeError() }}</p>
+  }
+  @if (mensajeExito()) {
+    <p class="mensaje-exito">{{ mensajeExito() }}</p>
+  }
+
+  @if (pacientes().length === 0) {
+    <p>No hay pacientes cargados.</p>
+  } @else {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Nombre y apellido</th>
+          <th>DNI</th>
+          <th>Nacimiento</th>
+          <th>Contacto</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of pacientes(); track p.id) {
+          <tr [class.elegido]="seleccionado()?.id === p.id">
+            <td>{{ p.nombreApellido }}</td>
+            <td>{{ p.dni }}</td>
+            <td>{{ formatearFecha(p.fechaNacimiento) }}</td>
+            <td>{{ p.email ?? p.celular ?? '-' }}</td>
+            <td class="acciones">
+              <button type="button" class="btn btn-secundario" (click)="elegir(p)">
+                Ver coberturas
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (seleccionado(); as paciente) {
+    <h3>Coberturas de {{ paciente.nombreApellido }}</h3>
+
+    @if (coberturas().length === 0) {
+      <p>No tiene coberturas: se atiende como particular.</p>
+    } @else {
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Financiador</th>
+            <th>N.º de afiliado</th>
+            <th>Plan</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of coberturas(); track c.id) {
+            <tr>
+              <td>
+                {{ nombreFinanciador()[c.idFinanciador] ?? 'Financiador ' + c.idFinanciador }}
+              </td>
+              <td>{{ c.numeroAfiliado }}</td>
+              <td>{{ c.plan || '-' }}</td>
+              <td class="acciones">
+                <button type="button" class="btn btn-secundario" (click)="darDeBaja(c)">
+                  Dar de baja
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+
+    <h3>Agregar una cobertura</h3>
+    <form (ngSubmit)="agregar()" #formCobertura="ngForm" class="formulario fila">
+      <div class="campo">
+        <label for="financiador">Obra social o prepaga</label>
+        <select id="financiador" name="financiador" [(ngModel)]="idFinanciador" required>
+          <option [ngValue]="null" disabled>Elegí una</option>
+          @for (f of financiadores(); track f.id) {
+            <option [ngValue]="f.id">{{ f.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="afiliado">N.º de afiliado</label>
+        <input
+          type="text"
+          id="afiliado"
+          name="afiliado"
+          [(ngModel)]="numeroAfiliado"
+          maxlength="30"
+          required
+        />
+      </div>
+
+      <div class="campo">
+        <label for="plan">Plan (opcional)</label>
+        <input type="text" id="plan" name="plan" [(ngModel)]="plan" maxlength="50" />
+      </div>
+
+      <div class="acciones">
+        <button type="submit" class="btn btn-primario" [disabled]="formCobertura.invalid">
+          Agregar
+        </button>
+      </div>
+    </form>
+  }
+</section>

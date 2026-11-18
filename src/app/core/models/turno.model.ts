@@ -59,7 +59,13 @@ export interface Cobertura {
   plan: string;
   activo: boolean;
 }
-
+/** CoberturaRequestDTO: lo que se manda al dar de alta una cobertura. `plan` es opcional. */
+export interface CoberturaRequest {
+  idPaciente: number;
+  idFinanciador: number;
+  numeroAfiliado: string;
+  plan: string | null;
+}
 /** FinanciadorResponseDTO: la obra social o prepaga (OSDE, PAMI, ...). */
 export interface Financiador {
   id: number;
