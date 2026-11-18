@@ -7,6 +7,7 @@ import { rolGuard } from './core/guards/auth.guard';
 import { Agenda } from './features/agenda/agenda/agenda';
 import { ReservarTurnoComponent } from './features/turnos/reservar-turno/reservar-turno.component';
 import { MisTurnosComponent } from './features/turnos/mis-turnos/mis-turnos.component';
+import { PacientesComponent } from './features/pacientes/pacientes.component';
 
 import { HistorialComponent } from './features/historial/historial.component';
 /**
@@ -41,7 +42,7 @@ export const routes: Routes = [
     canActivate: [rolGuard('ADMINISTRADOR')],
     children: [
       { path: 'agenda', component: Agenda },
-      { path: 'pacientes', component: EnConstruccionComponent, data: { titulo: 'Pacientes' } },
+       { path: 'pacientes', component: PacientesComponent },
       { path: 'historial', component: HistorialComponent },
     ],
   },
