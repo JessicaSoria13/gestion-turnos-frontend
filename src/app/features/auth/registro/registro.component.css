@@ -1,24 +1,93 @@
-/* .tarjeta, .formulario, .campo, .btn, .mensaje-error y .mensaje-exito son globales (src/styles.css).
+/* .tarjeta-acceso, .campo, .control, .btn y los mensajes son globales (src/styles.css).
+   El panel azul y la columna del formulario están en shared/layout-acceso.
    Acá solo lo propio del registro. */
-.tarjeta {
-  max-width: 440px;
+
+/* La tarjeta del registro es más ancha para los campos en 2 columnas */
+.tarjeta-acceso {
+  /* "container": los @container de abajo miran el ancho de la tarjeta, no el de la pantalla */
+  container-type: inline-size;
+  max-width: 720px;
+  gap: 20px;
+  padding: 30px 36px 28px;
 }
 
-.enlaces {
-  margin: 12px 0 0;
-  font-size: 0.92rem;
+.formulario {
+  gap: 18px;
 }
 
-.mensaje-error p {
-  margin: 0;
+/* "* Campos obligatorios" */
+.aviso-obligatorios {
+  margin: -8px 0 0;
+  font-size: 11px;
+  color: var(--texto-suave);
 }
 
-.mensaje-error ul {
-  margin: 6px 0 0;
-  padding-left: 18px;
+.aviso-obligatorios .obligatorio {
+  margin: 0 2px 0 0;
 }
 
-a.btn {
-  display: inline-block;
-  text-decoration: none;
+/* Grilla de 2 columnas iguales */
+.grilla-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 16px;
+}
+
+/* Un campo que ocupa las 2 columnas */
+.grilla-campos .ancho-completo {
+  grid-column: 1 / -1;
+}
+
+/* Botón "Crear cuenta" con el aviso pegado abajo */
+.grupo-enviar {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.grupo-enviar .btn {
+  height: 54px;
+}
+
+/* Fila de abajo: "¿Ya tenés una cuenta?" + botón */
+.cuenta-existente {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cuenta-existente .pregunta {
+  margin: 0 0 3px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cuenta-existente .btn {
+  width: 150px;
+  font-size: 13px;
+}
+
+/* En pantallas chicas la tarjeta usa menos padding */
+@media (max-width: 640px) {
+  .tarjeta-acceso {
+    padding: 28px 20px;
+  }
+}
+
+/* Si la tarjeta queda angosta (celular o notebook chica), los campos van en una sola columna */
+@container (max-width: 600px) {
+  .grilla-campos {
+    grid-template-columns: 1fr;
+  }
+
+  .cuenta-existente {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .cuenta-existente .btn {
+    width: 100%;
+  }
 }

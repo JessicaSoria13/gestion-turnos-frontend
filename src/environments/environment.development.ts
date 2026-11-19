@@ -3,6 +3,5 @@
 // (proxy.conf.mjs) las redirige al backend Spring Boot (puerto 8080 o BACKEND_PORT), sin el header
 // Origin. Así el backend no aplica CORS y no hace falta tocar SecurityConfig.
 export const environment = {
-  production: false,
   apiUrl: '/api/v1',
 };

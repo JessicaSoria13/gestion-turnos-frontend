@@ -1,4 +1,5 @@
 <section class="tarjeta">
+  <p class="identificador">Administración</p>
   <h2>Pacientes</h2>
 
   @if (mensajeError()) {
@@ -11,6 +12,7 @@
   @if (pacientes().length === 0) {
     <p>No hay pacientes cargados.</p>
   } @else {
+    <div class="tabla-contenedor">
     <table class="tabla">
       <thead>
         <tr>
@@ -37,6 +39,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
   @if (seleccionado(); as paciente) {
@@ -45,7 +48,8 @@
     @if (coberturas().length === 0) {
       <p>No tiene coberturas: se atiende como particular.</p>
     } @else {
-      <table class="tabla">
+      <div class="tabla-contenedor">
+    <table class="tabla">
         <thead>
           <tr>
             <th>Financiador</th>
@@ -71,6 +75,7 @@
           }
         </tbody>
       </table>
+    </div>
     }
 
     <h3>Agregar una cobertura</h3>

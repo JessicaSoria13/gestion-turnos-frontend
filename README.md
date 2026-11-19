@@ -1,8 +1,7 @@
 # Frontend NEXA Salud (Angular 22)
 
 Proyecto basado en el repositorio que pasó el profe: https://github.com/fborzi/angular
-(misma estructura `core/` + `features/`, interceptor JWT y guard). Para entender cada concepto
-de Angular comparado con Spring Boot, ver [GUIA_CONCEPTOS.md](./GUIA_CONCEPTOS.md).
+(misma estructura `core/` + `features/`, interceptor JWT y guard).
 
 El **backend** (Spring Boot), la base de datos, la colección de Postman y `contexto.md` (reglas del
 proyecto) están en el otro repositorio:
@@ -40,7 +39,7 @@ encuentra el backend: revisá que esté levantado y en el puerto correcto.
 ```text
 src/app/
 ├── core/                      # Código compartido (una sola instancia)
-│   ├── guards/auth.guard.ts   # authGuard (hay sesión) y rolGuard('PACIENTE' | 'ADMINISTRADOR')
+│   ├── guards/auth.guard.ts   # rolGuard('PACIENTE' | 'ADMINISTRADOR'): protege las rutas por rol
 │   ├── interceptors/          # jwt.interceptor.ts: agrega el token y maneja el 401
 │   ├── models/                # Interfaces de los DTOs del backend (auth.model.ts, ...)
 │   ├── services/              # Un servicio por recurso del backend (auth.service.ts, ...)
@@ -49,8 +48,13 @@ src/app/
 │   ├── auth/login/            # Login con DNI, contraseña y elección de rol
 │   ├── auth/registro/         # Registro de paciente (POST /auth/register)
 │   ├── auth/recuperar-contrasena/  # Pedir código por email y cambiar la contraseña
-│   ├── agenda/                # Agenda del administrador (disponibilidad semanal)
-│   └── en-construccion/       # Pantalla provisoria para rutas que todavía no existen
+│   ├── agenda/                # Administrador: disponibilidad semanal y bloqueos
+│   ├── pacientes/             # Administrador: pacientes y sus coberturas
+│   ├── historial/             # Administrador: turnos, consultas, diagnósticos y tratamientos
+│   └── turnos/                # Paciente: reservar turno y mis turnos (+ fechas.ts)
+├── shared/                    # Componentes reutilizables
+│   ├── campo-fecha/           # Campo de fecha dd/mm/aaaa con calendario
+│   └── layout-acceso/         # Panel azul + tarjeta de login, registro y recuperar contraseña
 ├── app.ts / app.html          # Encabezado con menú según el rol y Cerrar sesión
 ├── app.routes.ts              # Rutas: /paciente/... solo PACIENTE, /admin/... solo ADMINISTRADOR
 └── app.config.ts              # HttpClient + interceptor JWT + router
@@ -61,8 +65,10 @@ src/app/
 1. Crear el componente: `npx ng generate component features/<modulo>/<pantalla>`
 2. Si llama al backend, crear o usar un servicio en `core/services/` (los componentes no usan
    `HttpClient` directo). El token lo agrega solo el interceptor.
-3. En `app.routes.ts`, reemplazar `EnConstruccionComponent` de **tu** ruta por tu componente.
-4. Mostrar los errores con `mensajeDeError(err)` y las clases globales `.mensaje-error` / `.mensaje-exito`.
+3. Agregar la ruta en `app.routes.ts`, dentro de `paciente` o `admin` según quién la usa (así queda
+   protegida por `rolGuard`), y el link en `ENLACES_POR_ROL` de `app.ts`.
+4. Usar las clases globales de `src/styles.css` (`.tarjeta`, `.identificador`, `.campo`, `.btn`,
+   `.tabla`, ...) y mostrar los errores con `mensajeDeError(err)` en `.mensaje-error` / `.mensaje-exito`.
 
 ## Comandos
 

@@ -5,11 +5,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest, Rol } from '../../../core/models/auth.model';
 import { mensajeDeError } from '../../../core/utils/errores';
+import { LayoutAcceso } from '../../../shared/layout-acceso/layout-acceso';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LayoutAcceso],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -25,6 +26,8 @@ export class LoginComponent {
   pedirRol = signal<boolean>(false);
   cargando = signal<boolean>(false);
   mensajeError = signal<string | null>(null);
+  // Solo visual: el botón ojo alterna entre ver y ocultar la contraseña
+  verContrasena = signal<boolean>(false);
 
   /**
    * POST /api/v1/auth/login. Si sale bien, AuthService guarda el token y el rol,

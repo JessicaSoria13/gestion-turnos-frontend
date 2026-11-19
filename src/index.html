@@ -5,7 +5,18 @@
   <title>NEXA Salud</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Ícono de la pestaña (favicon), con el logo de NEXA Salud:
+       - favicon.ico: 16, 32 y 48 px, para todos los navegadores (Safari incluido).
+       - favicon.svg: se ve nítido en cualquier tamaño en los navegadores que lo soportan.
+       - apple-touch-icon.png: 180 px, cuando se agrega la página a la pantalla de inicio del celular. -->
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#185fa6">
+  <!-- Fuente Inter (Google Fonts), pesos 400, 500, 600 y 700 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <app-root></app-root>

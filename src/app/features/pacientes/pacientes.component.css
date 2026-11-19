@@ -1,51 +1,11 @@
-/* .tarjeta, .campo, .btn, .mensaje-error y .mensaje-exito son globales (src/styles.css).
-   Acá solo lo propio de pacientes. */
+/* .tarjeta, .tabla, .formulario.fila, .campo, .btn, .acciones y los mensajes
+   son globales (src/styles.css). Acá solo lo propio de pacientes. */
 .tarjeta {
   max-width: 900px;
 }
 
-h3 {
-  margin: 24px 0 12px;
-  font-size: 1.05rem;
-  color: #0f172a;
-}
-
-.tabla {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 8px;
-}
-
-.tabla th,
-.tabla td {
-  text-align: left;
-  padding: 10px 8px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.tabla th {
-  font-size: 0.85rem;
-  color: #475569;
-}
-
-/* La fila del paciente elegido queda marcada */
-.tabla tr.elegido td {
-  background: #e7f1fb;
-}
-
-.acciones {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-.formulario.fila {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.formulario.fila .campo {
-  flex: 1 1 160px;
+/* Separación entre los mensajes y la tabla */
+.mensaje-error,
+.mensaje-exito {
+  margin-bottom: 16px;
 }

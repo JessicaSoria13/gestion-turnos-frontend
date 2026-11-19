@@ -30,6 +30,8 @@ export class CampoFecha implements ControlValueAccessor, Validator {
   min = input<string | null>(null);
   /** Fecha máxima en "yyyy-MM-dd". */
   max = input<string | null>(null);
+  /** Texto de ejemplo del campo (solo visual). */
+  placeholder = input<string>('dd/mm/aaaa');
 
   private readonly selector = viewChild.required<ElementRef<HTMLInputElement>>('selector');
 

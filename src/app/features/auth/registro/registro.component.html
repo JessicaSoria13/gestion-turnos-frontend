@@ -1,121 +1,237 @@
-<section class="tarjeta">
-  <h2>Registrarme</h2>
-
-  @if (mensajeExito()) {
-    <p class="mensaje-exito">{{ mensajeExito() }} Ya podés ingresar con tu DNI y contraseña.</p>
-    <a routerLink="/login" class="btn btn-primario">Ir a ingresar</a>
-  } @else {
-    <form (ngSubmit)="registrarme()" #formRegistro="ngForm" class="formulario">
-      <div class="campo">
-        <label for="dni">DNI</label>
-        <input
-          type="text"
-          id="dni"
-          name="dni"
-          [(ngModel)]="dni"
-          required
-          maxlength="10"
-          autocomplete="username"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="nombreApellido">Nombre y apellido</label>
-        <input
-          type="text"
-          id="nombreApellido"
-          name="nombreApellido"
-          [(ngModel)]="nombreApellido"
-          required
-          maxlength="100"
-          autocomplete="name"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="fechaNacimiento">Fecha de nacimiento</label>
-        <app-campo-fecha
-          idInput="fechaNacimiento"
-          name="fechaNacimiento"
-          [(ngModel)]="fechaNacimiento"
-          required
-          [max]="fechaMaxima"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="email">Email (opcional, sirve para recuperar la contraseña)</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          [(ngModel)]="email"
-          email
-          maxlength="100"
-          autocomplete="email"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="celular">Celular (opcional)</label>
-        <input
-          type="tel"
-          id="celular"
-          name="celular"
-          [(ngModel)]="celular"
-          maxlength="20"
-          autocomplete="tel"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="contrasena">Contraseña (mínimo 6 caracteres)</label>
-        <input
-          type="password"
-          id="contrasena"
-          name="contrasena"
-          [(ngModel)]="contrasena"
-          required
-          minlength="6"
-          maxlength="100"
-          autocomplete="new-password"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="repetirContrasena">Repetir contraseña</label>
-        <input
-          type="password"
-          id="repetirContrasena"
-          name="repetirContrasena"
-          [(ngModel)]="repetirContrasena"
-          required
-          autocomplete="new-password"
-        />
-      </div>
-
-      @if (mensajeError()) {
-        <div class="mensaje-error">
-          <p>{{ mensajeError() }}</p>
-          @if (detalles().length) {
-            <ul>
-              @for (detalle of detalles(); track detalle) {
-                <li>{{ detalle }}</li>
-              }
-            </ul>
-          }
+<app-layout-acceso
+  variante="registro"
+  chip="Registro simple y seguro"
+  titulo="Empezá a cuidar tu salud desde un solo lugar"
+  descripcion="Creá tu cuenta para gestionar turnos, consultas y coberturas con tranquilidad."
+>
+  <!-- Recuadro del panel azul: beneficios de la cuenta -->
+  <div class="recuadro-panel" recuadro>
+    <p class="recuadro-titulo">Con tu cuenta NEXA</p>
+    <ul class="beneficios">
+      <li>
+        <span class="recuadro-icono"><span class="icono icono-calendar-check" aria-hidden="true"></span></span>
+        <div>
+          <strong>Turnos organizados</strong>
+          <span>Consultá y gestioná tus próximos turnos.</span>
         </div>
-      }
+      </li>
+      <li>
+        <span class="recuadro-icono"><span class="icono icono-folder-heart" aria-hidden="true"></span></span>
+        <div>
+          <strong>Información centralizada</strong>
+          <span>Tus datos de salud en un solo lugar.</span>
+        </div>
+      </li>
+      <li>
+        <span class="recuadro-icono"><span class="icono icono-history" aria-hidden="true"></span></span>
+        <div>
+          <strong>Historial a mano</strong>
+          <span>Revisá tus turnos anteriores.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
 
-      <button
-        type="submit"
-        class="btn btn-primario"
-        [disabled]="formRegistro.invalid || cargando()"
-      >
-        {{ cargando() ? 'Registrando...' : 'Registrarme' }}
-      </button>
-    </form>
+  <section class="tarjeta tarjeta-acceso">
+    <header class="intro-tarjeta">
+      <p class="identificador">Área personal</p>
+      <h2>Creá tu cuenta</h2>
+      <p>Completá tus datos para acceder a NEXA Salud.</p>
+    </header>
 
-    <p class="enlaces">¿Ya tenés cuenta? <a routerLink="/login">Ingresar</a></p>
-  }
-</section>
+    @if (mensajeExito()) {
+      <p class="mensaje-exito">{{ mensajeExito() }} Ya podés ingresar con tu DNI y contraseña.</p>
+      <a routerLink="/login" class="btn btn-primario btn-bloque">
+        Ir a iniciar sesión
+        <span class="icono icono-arrow-right" aria-hidden="true"></span>
+      </a>
+    } @else {
+      <form (ngSubmit)="registrarme()" #formRegistro="ngForm" class="formulario">
+        <p class="aviso-obligatorios"><span class="obligatorio">*</span> Campos obligatorios</p>
+
+        <!-- Los campos van en una grilla de 2 columnas -->
+        <div class="grilla-campos">
+          <div class="campo">
+            <label for="dni">DNI<span class="obligatorio">*</span></label>
+            <div class="control">
+              <span class="icono icono-id-card" aria-hidden="true"></span>
+              <input
+                type="text"
+                id="dni"
+                name="dni"
+                [(ngModel)]="dni"
+                required
+                maxlength="10"
+                autocomplete="username"
+                placeholder="Ingresá tu DNI"
+              />
+            </div>
+            <p class="ayuda-campo">Sin puntos ni espacios.</p>
+          </div>
+
+          <div class="campo">
+            <label for="email">Email</label>
+            <div class="control">
+              <span class="icono icono-mail" aria-hidden="true"></span>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                [(ngModel)]="email"
+                email
+                maxlength="100"
+                autocomplete="email"
+                placeholder="nombre@correo.com"
+              />
+            </div>
+            <p class="ayuda-campo">Opcional. Sirve para recuperar la contraseña.</p>
+          </div>
+
+          <div class="campo ancho-completo">
+            <label for="nombreApellido">Nombre y apellido<span class="obligatorio">*</span></label>
+            <div class="control">
+              <span class="icono icono-user" aria-hidden="true"></span>
+              <input
+                type="text"
+                id="nombreApellido"
+                name="nombreApellido"
+                [(ngModel)]="nombreApellido"
+                required
+                maxlength="100"
+                autocomplete="name"
+                placeholder="Tu nombre y apellido"
+              />
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="fechaNacimiento">Fecha de nacimiento<span class="obligatorio">*</span></label>
+            <app-campo-fecha
+              idInput="fechaNacimiento"
+              name="fechaNacimiento"
+              [(ngModel)]="fechaNacimiento"
+              required
+              [max]="fechaMaxima"
+              placeholder="DD / MM / AAAA"
+            />
+          </div>
+
+          <div class="campo">
+            <label for="celular">Celular</label>
+            <div class="control">
+              <span class="icono icono-phone" aria-hidden="true"></span>
+              <input
+                type="tel"
+                id="celular"
+                name="celular"
+                [(ngModel)]="celular"
+                maxlength="20"
+                autocomplete="tel"
+                placeholder="Ej. 11 1234 5678"
+              />
+            </div>
+            <p class="ayuda-campo">Opcional.</p>
+          </div>
+
+          <div class="campo">
+            <label for="contrasena">Contraseña<span class="obligatorio">*</span></label>
+            <div class="control">
+              <span class="icono icono-lock-keyhole" aria-hidden="true"></span>
+              <input
+                [type]="verContrasena() ? 'text' : 'password'"
+                id="contrasena"
+                name="contrasena"
+                [(ngModel)]="contrasena"
+                required
+                minlength="6"
+                maxlength="100"
+                autocomplete="new-password"
+                placeholder="Creá una contraseña"
+              />
+              <button
+                type="button"
+                class="boton-ojo"
+                [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                (click)="verContrasena.set(!verContrasena())"
+              >
+                <span
+                  class="icono"
+                  [class.icono-eye]="!verContrasena()"
+                  [class.icono-eye-off]="verContrasena()"
+                  aria-hidden="true"
+                ></span>
+              </button>
+            </div>
+            <p class="ayuda-campo">Mínimo 6 caracteres.</p>
+          </div>
+
+          <div class="campo">
+            <label for="repetirContrasena">Repetir contraseña<span class="obligatorio">*</span></label>
+            <div class="control">
+              <span class="icono icono-lock-keyhole" aria-hidden="true"></span>
+              <input
+                [type]="verRepetir() ? 'text' : 'password'"
+                id="repetirContrasena"
+                name="repetirContrasena"
+                [(ngModel)]="repetirContrasena"
+                required
+                autocomplete="new-password"
+                placeholder="Repetí la contraseña"
+              />
+              <button
+                type="button"
+                class="boton-ojo"
+                [attr.aria-label]="verRepetir() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                (click)="verRepetir.set(!verRepetir())"
+              >
+                <span
+                  class="icono"
+                  [class.icono-eye]="!verRepetir()"
+                  [class.icono-eye-off]="verRepetir()"
+                  aria-hidden="true"
+                ></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        @if (mensajeError()) {
+          <div class="mensaje-error">
+            <p>{{ mensajeError() }}</p>
+            @if (detalles().length) {
+              <ul>
+                @for (detalle of detalles(); track detalle) {
+                  <li>{{ detalle }}</li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+        <div class="grupo-enviar">
+          <button
+            type="submit"
+            class="btn btn-primario btn-bloque"
+            [disabled]="formRegistro.invalid || cargando()"
+          >
+            {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}
+            <span class="icono icono-arrow-right" aria-hidden="true"></span>
+          </button>
+          <p class="aviso">
+            <span class="icono icono-lock" aria-hidden="true"></span>
+            Tus datos están protegidos
+          </p>
+        </div>
+      </form>
+
+      <!-- Para quien ya tiene cuenta -->
+      <div class="cuenta-existente">
+        <div>
+          <p class="pregunta">¿Ya tenés una cuenta?</p>
+          <p class="ayuda-campo">Ingresá con tu DNI y contraseña.</p>
+        </div>
+        <a routerLink="/login" class="btn btn-secundario">Iniciar sesión</a>
+      </div>
+    }
+  </section>
+</app-layout-acceso>

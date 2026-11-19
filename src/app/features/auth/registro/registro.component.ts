@@ -5,6 +5,7 @@ import { CampoFecha } from '../../../shared/campo-fecha/campo-fecha';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegistroRequest } from '../../../core/models/auth.model';
 import { detallesDeError, mensajeDeError } from '../../../core/utils/errores';
+import { LayoutAcceso } from '../../../shared/layout-acceso/layout-acceso';
 
 /**
  * Pantalla de Registro (pública). Crea la cuenta de PACIENTE con POST /api/v1/auth/register.
@@ -13,7 +14,7 @@ import { detallesDeError, mensajeDeError } from '../../../core/utils/errores';
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [FormsModule, RouterLink, CampoFecha],
+  imports: [FormsModule, RouterLink, CampoFecha, LayoutAcceso],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css',
 })
@@ -35,6 +36,9 @@ export class RegistroComponent {
   mensajeError = signal<string | null>(null);
   detalles = signal<string[]>([]);
   mensajeExito = signal<string | null>(null);
+  // Solo visual: los botones ojo alternan entre ver y ocultar cada contraseña
+  verContrasena = signal<boolean>(false);
+  verRepetir = signal<boolean>(false);
 
   registrarme(): void {
     this.mensajeError.set(null);

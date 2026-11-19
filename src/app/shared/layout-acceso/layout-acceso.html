@@ -1,0 +1,43 @@
+<div class="acceso">
+  <!-- Panel azul de presentación -->
+  <aside class="panel">
+    <!-- Formas decorativas del fondo -->
+    <span class="halo" aria-hidden="true"></span>
+    <span class="plano" aria-hidden="true"></span>
+
+    <div class="marca">
+      <span class="marca-simbolo"><img src="logo-nexa.svg" alt="" /></span>
+      <span class="marca-texto">
+        <span class="marca-nombre">NEXA Salud</span>
+        <span class="marca-slogan">Tu salud, conectada</span>
+      </span>
+    </div>
+
+    <div class="mensaje">
+      <span class="distintivo"><span class="punto" aria-hidden="true"></span>{{ chip() }}</span>
+      <h1 class="panel-titulo">{{ titulo() }}</h1>
+      <p class="panel-texto">{{ descripcion() }}</p>
+      <!-- Acá va el recuadro que manda cada pantalla (el elemento con el atributo "recuadro") -->
+      <ng-content select="[recuadro]" />
+    </div>
+
+    <ul class="garantias">
+      <li><span class="icono icono-shield-check" aria-hidden="true"></span>Identidad protegida</li>
+      <li><span class="icono icono-lock" aria-hidden="true"></span>Datos protegidos</li>
+    </ul>
+  </aside>
+
+  <!-- Columna del formulario -->
+  <div class="zona-formulario">
+    <p class="conexion-segura">
+      <span class="icono icono-shield-check" aria-hidden="true"></span>Conexión segura
+    </p>
+
+    <div class="zona-tarjeta">
+      <!-- Acá va la tarjeta con el formulario de cada pantalla -->
+      <ng-content />
+    </div>
+
+    <footer class="pie-acceso">© 2026 NEXA Salud</footer>
+  </div>
+</div>

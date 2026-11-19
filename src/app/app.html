@@ -1,29 +1,41 @@
 <div class="layout-principal">
-  <header class="barra-superior">
-    <div class="contenedor-header">
-      <h1 class="marca">NEXA Salud</h1>
+  <!-- En login, registro y recuperar contraseña no va el encabezado: esas pantallas tienen su propio diseño -->
+  @if (!esPantallaDeAcceso()) {
+    <header class="barra-superior">
+      <div class="contenedor-header">
+        <h1 class="marca">
+          <span class="marca-simbolo"><img src="logo-nexa.svg" alt="" /></span>
+          <span class="marca-texto">
+            <span class="marca-nombre">NEXA Salud</span>
+            <span class="marca-slogan">Tu salud, conectada</span>
+          </span>
+        </h1>
 
-      @if (authService.estaAutenticado()) {
-        <nav class="navegacion">
-          @for (enlace of enlaces(); track enlace.ruta) {
-            <a [routerLink]="enlace.ruta" routerLinkActive="activo">{{ enlace.texto }}</a>
-          }
-        </nav>
+        @if (authService.estaAutenticado()) {
+          <nav class="navegacion">
+            @for (enlace of enlaces(); track enlace.ruta) {
+              <a [routerLink]="enlace.ruta" routerLinkActive="activo">{{ enlace.texto }}</a>
+            }
+          </nav>
 
-        <div class="sesion">
-          <span class="rol">{{ nombreRol() }}</span>
-          <button type="button" class="btn-salir" (click)="cerrarSesion()">Cerrar sesión</button>
-        </div>
-      }
-    </div>
-  </header>
+          <div class="sesion">
+            <span class="rol">{{ nombreRol() }}</span>
+            <button type="button" class="btn-salir" (click)="cerrarSesion()">Cerrar sesión</button>
+          </div>
+        }
+      </div>
+    </header>
+  }
 
-  <main class="contenido-principal">
+  <!-- En las pantallas de acceso el contenido ocupa toda la pantalla (sin márgenes) -->
+  <main [class.contenido-principal]="!esPantallaDeAcceso()">
     <!-- Acá Angular inyecta el componente que corresponda según la ruta activa (app.routes.ts) -->
     <router-outlet />
   </main>
 
-  <footer class="pie-pagina">
-    <p>NEXA Salud · Gestión de turnos médicos</p>
-  </footer>
+  @if (!esPantallaDeAcceso()) {
+    <footer class="pie-pagina">
+      <p>© 2026 NEXA Salud · Gestión de turnos médicos</p>
+    </footer>
+  }
 </div>
