@@ -1,63 +1,14 @@
+/* .tarjeta, .tabla, .formulario.fila, .campo, .btn, .acciones, .ayuda y los mensajes
+   son globales (src/styles.css). Acá solo lo propio de la agenda. */
 .tarjeta {
   max-width: 900px;
 }
 
-h3 {
-  margin: 24px 0 12px;
-  font-size: 1.05rem;
-  color: #0f172a;
-}
-
-.tabla {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 8px;
-}
-
-.tabla th,
-.tabla td {
-  text-align: left;
-  padding: 10px 8px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.tabla th {
-  font-size: 0.85rem;
-  color: #475569;
-}
-
-.acciones {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-.formulario.fila {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.formulario.fila .campo {
-  flex: 1 1 140px;
-}
-
-
-/* Parte 2: bloqueos */
-.tarjeta + .tarjeta {
-  margin-top: 24px;
-}
-
-.ayuda {
-  margin: 0 0 12px;
-  font-size: 0.9rem;
-  color: #475569;
-}
-
+/* El campo "Motivo" de los bloqueos es más ancho que los de fecha */
 .formulario.fila .campo.motivo {
   flex: 2 1 240px;
 }
+
 /* Mensajes de cada parte, debajo de su formulario */
 .formulario + .mensaje-error,
 .formulario + .mensaje-exito,

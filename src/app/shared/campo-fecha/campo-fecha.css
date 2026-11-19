@@ -1,3 +1,5 @@
+/* El input visible toma los estilos globales de .campo input (src/styles.css).
+   Acá solo lo propio del campo de fecha. */
 :host {
   display: block;
 }
@@ -8,22 +10,39 @@
   align-items: stretch;
 }
 
+/* Lugar a la derecha para el botón del calendario */
 .campo-fecha input[type='text'] {
   flex: 1;
   width: 100%;
-  padding-right: 40px;
+  padding-right: 52px;
 }
 
+/* Botón del calendario, adentro del campo a la derecha (igual que el botón ojo) */
 .boton-calendario {
   position: absolute;
-  right: 4px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   border: none;
+  border-radius: 8px;
   background: transparent;
+  color: var(--texto-secundario);
   cursor: pointer;
-  font-size: 1rem;
-  padding: 4px 6px;
+}
+
+.boton-calendario:hover:not(:disabled) {
+  color: var(--azul);
+  background: var(--azul-fondo);
+}
+
+.boton-calendario:focus-visible {
+  outline: 2px solid var(--azul);
 }
 
 .boton-calendario:disabled {

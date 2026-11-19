@@ -3,7 +3,7 @@
     type="text"
     [id]="idInput()"
     inputmode="numeric"
-    placeholder="dd/mm/aaaa"
+    [placeholder]="placeholder()"
     maxlength="10"
     autocomplete="off"
     [value]="texto()"
@@ -18,7 +18,7 @@
     [disabled]="deshabilitado()"
     (click)="abrirCalendario()"
   >
-    📅
+    <span class="icono icono-calendar-days" aria-hidden="true"></span>
   </button>
   <!-- Input nativo oculto: solo se usa para abrir el calendario -->
   <input

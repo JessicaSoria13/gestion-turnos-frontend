@@ -4,11 +4,13 @@
 }
 
 <section class="tarjeta">
+  <p class="identificador">Agenda</p>
   <h2>Disponibilidad semanal</h2>
 
   @if (disponibilidades().length === 0) {
     <p>No hay franjas cargadas.</p>
   } @else {
+    <div class="tabla-contenedor">
     <table class="tabla">
       <thead>
         <tr>
@@ -36,6 +38,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
   <h3>{{ idEditando() === null ? 'Cargar una franja' : 'Editar franja' }}</h3>
@@ -95,6 +98,7 @@
 </section>
 
 <section class="tarjeta">
+  <p class="identificador">Agenda</p>
   <h2>Bloqueos</h2>
   <p class="ayuda">
     Días en que el médico no atiende (vacaciones, feriados, licencias). Al cargar un bloqueo se
@@ -104,6 +108,7 @@
   @if (bloqueos().length === 0) {
     <p>No hay bloqueos cargados.</p>
   } @else {
+    <div class="tabla-contenedor">
     <table class="tabla">
       <thead>
         <tr>
@@ -128,6 +133,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
   <h3>Cargar un bloqueo</h3>

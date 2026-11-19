@@ -1,87 +1,404 @@
 /* Estilos globales de la aplicación: los usan todas las pantallas
-   (tarjetas, formularios, botones y mensajes) para que se vean iguales. */
+   (tarjetas, formularios, botones, tablas y mensajes) para que se vean iguales.
+   Los colores y medidas salen del diseño de Figma de NEXA Salud. */
+
+/* ---------- Tokens del diseño ----------
+   Variables CSS: se usan con var(--nombre). Si hay que cambiar un color,
+   se cambia acá y se actualiza en toda la app. */
+:root {
+  --azul-oscuro: #0f3f72;
+  --azul: #185fa6; /* primario: botones, links y acentos */
+  --azul-claro: #2474b9;
+  /* Degradé del panel y del encabezado: de azul oscuro arriba a azul claro abajo */
+  --degrade-panel: linear-gradient(
+    180deg,
+    var(--azul-oscuro) 0%,
+    var(--azul) 62%,
+    var(--azul-claro) 100%
+  );
+
+  --fondo: #f4f7fa;
+  --superficie: #ffffff;
+  --campo-fondo: #f7f9fc;
+
+  --borde: #d7e0e8;
+  --borde-campo: #a9bac8;
+
+  --texto: #172b3a;
+  --texto-secundario: #5b6b79;
+  --texto-suave: #768693;
+  --texto-sobre-azul: #d8e7f3;
+
+  --verde-chip-fondo: rgba(143, 227, 192, 0.11);
+  --verde-chip-texto: #b9f1d9;
+
+  /* Colores de estado (mensajes y chips de turnos) */
+  --rojo: #b4383a;
+  --rojo-fondo: #fdf0f0;
+  --rojo-borde: #f3c7c7;
+  --verde: #1f7a55;
+  --verde-fondo: #eaf7f0;
+  --verde-borde: #bfe5d1;
+  --azul-fondo: #e8f1fa;
+
+  /* Radios */
+  --radio-tarjeta: 20px;
+  --radio-campo: 12px;
+  --radio-chip: 999px;
+
+  /* Sombras */
+  --sombra-tarjeta: 0 20px 56px -8px rgba(16, 42, 67, 0.1);
+  --sombra-boton: 0 6px 16px -4px rgba(24, 95, 166, 0.22);
+  --halo-foco: 0 0 0 3px rgba(24, 95, 166, 0.15);
+}
+
+/* ---------- Base ---------- */
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family:
-    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    sans-serif;
-  background-color: #f1f5f9;
-  color: #1e293b;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  background-color: var(--fondo);
+  color: var(--texto);
 }
 
 a {
-  color: #1e4fa3;
+  color: var(--azul);
 }
 
-.tarjeta {
+/* ---------- Íconos ----------
+   Los íconos (Lucide) están en public/icons/. Se dibujan con una "máscara":
+   el SVG define la forma y el color sale de currentColor (el color del texto),
+   así el mismo ícono sirve en blanco, gris o azul.
+   Uso: <span class="icono icono-mail" aria-hidden="true"></span> */
+.icono {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background-color: currentColor;
+  -webkit-mask: var(--icono) center / contain no-repeat;
+  mask: var(--icono) center / contain no-repeat;
+}
+
+.icono-arrow-right { --icono: url('/icons/arrow-right.svg'); }
+.icono-calendar-check { --icono: url('/icons/calendar-check.svg'); }
+.icono-calendar-days { --icono: url('/icons/calendar-days.svg'); }
+.icono-eye { --icono: url('/icons/eye.svg'); }
+.icono-eye-off { --icono: url('/icons/eye-off.svg'); }
+.icono-file-check { --icono: url('/icons/file-check.svg'); }
+.icono-folder-heart { --icono: url('/icons/folder-heart.svg'); }
+.icono-history { --icono: url('/icons/history.svg'); }
+.icono-id-card { --icono: url('/icons/id-card.svg'); }
+.icono-lock { --icono: url('/icons/lock.svg'); }
+.icono-lock-keyhole { --icono: url('/icons/lock-keyhole.svg'); }
+.icono-mail { --icono: url('/icons/mail.svg'); }
+.icono-phone { --icono: url('/icons/phone.svg'); }
+.icono-shield-check { --icono: url('/icons/shield-check.svg'); }
+.icono-user { --icono: url('/icons/user.svg'); }
+
+/* ---------- Marca (logo + nombre + slogan) ----------
+   Se usa sobre fondo azul: en el encabezado y en el panel de las pantallas de acceso. */
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Cuadrado blanco con el símbolo adentro */
+.marca-simbolo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
   background: #ffffff;
-  border-radius: 10px;
-  padding: 24px;
+}
+
+/* El SVG del logo ya trae el espacio interno: ocupa todo el cuadrado */
+.marca-simbolo img {
+  width: 42px;
+  height: 42px;
+}
+
+.marca-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: normal;
+}
+
+.marca-nombre {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.marca-slogan {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--texto-sobre-azul);
+}
+
+/* ---------- Identificador de tarjeta ----------
+   La rayita azul con el texto en mayúsculas que va arriba del título. */
+.identificador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  color: var(--azul);
+}
+
+.identificador::before {
+  content: '';
+  width: 24px;
+  height: 3px;
+  border-radius: var(--radio-chip);
+  background: var(--azul);
+}
+
+/* ---------- Tarjetas ---------- */
+.tarjeta {
+  background: var(--superficie);
+  border-radius: var(--radio-tarjeta);
+  padding: 32px;
   margin: 0 auto;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-  border: 1px solid #e2e8f0;
+  box-shadow: var(--sombra-tarjeta);
+  border: 1px solid var(--borde);
+}
+
+/* Separación entre dos tarjetas seguidas (ej.: agenda) */
+.tarjeta + .tarjeta {
+  margin-top: 24px;
 }
 
 .tarjeta h2 {
-  margin: 0 0 16px;
-  font-size: 1.35rem;
-  color: #0f172a;
+  margin: 0 0 20px;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.18;
+  color: var(--texto);
 }
 
+/* Subtítulos dentro de una tarjeta */
+.tarjeta h3 {
+  margin: 28px 0 14px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+/* Texto de ayuda o explicación debajo de un título */
+.ayuda {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--texto-secundario);
+}
+
+/* ---------- Formularios ---------- */
 .formulario {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+/* Formulario en fila: los campos uno al lado del otro (agenda, pacientes) */
+.formulario.fila {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
   gap: 16px;
 }
 
+.formulario.fila .campo {
+  flex: 1 1 150px;
+}
+
+/* Un campo = label + control + texto de ayuda */
 .campo {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
-.campo label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #334155;
+.campo label,
+.campo .etiqueta {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: normal;
+  color: var(--texto);
 }
 
+/* Cabecera del campo con algo a la derecha del label (ej.: "¿Olvidaste tu contraseña?") */
+.campo-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.campo-cabecera a {
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.campo-cabecera a:hover {
+  text-decoration: underline;
+}
+
+/* Asterisco azul de los campos obligatorios */
+.obligatorio {
+  margin-left: 4px;
+  color: var(--azul);
+}
+
+/* Inputs, selects y textareas */
 .campo input,
 .campo select,
 .campo textarea {
-  padding: 10px 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid var(--borde-campo);
+  border-radius: var(--radio-campo);
+  font-size: 15px;
   font-family: inherit;
-  color: #0f172a;
-  background: #ffffff;
+  color: var(--texto);
+  background: var(--campo-fondo);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
+.campo textarea {
+  height: auto;
+  min-height: 90px;
+  padding: 12px 16px;
+  resize: vertical;
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: var(--texto-suave);
+}
+
+/* Foco: borde azul + halo suave */
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
   outline: none;
-  border-color: #1e4fa3;
-  box-shadow: 0 0 0 3px rgba(30, 79, 163, 0.15);
+  border-color: var(--azul);
+  box-shadow: var(--halo-foco);
+  background: var(--superficie);
 }
 
+/* Error: Angular agrega ng-invalid y ng-touched cuando el campo quedó mal completado */
+.campo input.ng-invalid.ng-touched,
+.campo select.ng-invalid.ng-touched,
+.campo textarea.ng-invalid.ng-touched,
+.campo app-campo-fecha.ng-invalid.ng-touched input {
+  border-color: var(--rojo);
+}
+
+/* Texto de ayuda chico debajo del control */
+.ayuda-campo {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--texto-suave);
+}
+
+/* Control con ícono: el ícono queda adentro del campo, a la izquierda */
+.control {
+  position: relative;
+}
+
+.control > .icono {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--texto-secundario);
+  pointer-events: none;
+}
+
+.control input,
+.control select {
+  padding-left: 46px;
+}
+
+/* Controles de las pantallas de acceso: un poco más altos (como en el Figma) */
+.control-grande input,
+.control-grande select {
+  height: 56px;
+}
+
+/* Botón ojo para ver / ocultar la contraseña, a la derecha del campo */
+.control .boton-ojo {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--texto-secundario);
+  cursor: pointer;
+}
+
+.control .boton-ojo:hover {
+  color: var(--azul);
+  background: var(--azul-fondo);
+}
+
+.control .boton-ojo:focus-visible {
+  outline: 2px solid var(--azul);
+}
+
+/* Si el campo tiene botón ojo, el texto no se mete debajo del botón */
+.control:has(.boton-ojo) input {
+  padding-right: 52px;
+}
+
+/* ---------- Botones ---------- */
 .btn {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
+  gap: 10px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radio-campo);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  line-height: 1;
   cursor: pointer;
   text-decoration: none;
-  border: 1px solid transparent;
-  font-family: inherit;
+  border: 1.5px solid transparent;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .btn:disabled {
@@ -89,37 +406,389 @@ a {
   cursor: not-allowed;
 }
 
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--halo-foco);
+}
+
+/* Primario: fondo azul, texto blanco */
 .btn-primario {
-  background-color: #1e4fa3;
+  background-color: var(--azul);
   color: #ffffff;
+  box-shadow: var(--sombra-boton);
 }
 
 .btn-primario:hover:not(:disabled) {
-  background-color: #163d80;
+  background-color: var(--azul-oscuro);
 }
 
+/* Secundario: blanco con borde azul */
 .btn-secundario {
-  background-color: #f8fafc;
-  color: #334155;
-  border-color: #cbd5e1;
+  background-color: var(--superficie);
+  color: var(--azul);
+  border-color: var(--azul);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background-color: var(--azul-fondo);
+}
+
+/* Botón de ancho completo (los formularios de acceso y reservar turno) */
+.btn-bloque {
+  width: 100%;
+  height: 48px;
+}
+
+.btn-primario.btn-bloque {
+  height: 56px;
+  font-size: 15px;
+}
+
+/* ---------- Separador con texto en el medio ---------- */
+.separador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.separador::before,
+.separador::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+/* ---------- Aviso chico con ícono (ej.: candado de seguridad) ---------- */
+.aviso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 11px;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+.aviso .icono {
+  width: 13px;
+  height: 13px;
+}
+
+/* ---------- Mensajes de error y de éxito ---------- */
+.mensaje-error,
+.mensaje-exito {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: var(--radio-campo);
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 .mensaje-error {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 6px;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #991b1b;
-  font-size: 0.92rem;
+  background-color: var(--rojo-fondo);
+  border: 1px solid var(--rojo-borde);
+  color: var(--rojo);
 }
 
 .mensaje-exito {
+  background-color: var(--verde-fondo);
+  border: 1px solid var(--verde-borde);
+  color: var(--verde);
+}
+
+/* Mensaje de error con lista de detalles (registro, recuperar contraseña) */
+.mensaje-error p {
   margin: 0;
-  padding: 10px 12px;
-  border-radius: 6px;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
-  font-size: 0.92rem;
+}
+
+.mensaje-error ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+/* ---------- Tablas ---------- */
+/* Contenedor para que la tabla se pueda desplazar de costado en pantallas chicas */
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.tabla th,
+.tabla td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+/* Encabezado con fondo suave y texto chico en mayúsculas */
+.tabla th {
+  background: var(--campo-fondo);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--texto-secundario);
+}
+
+.tabla th:first-child {
+  border-top-left-radius: var(--radio-campo);
+}
+
+.tabla th:last-child {
+  border-top-right-radius: var(--radio-campo);
+}
+
+/* Hover suave en las filas */
+.tabla tbody tr:hover td {
+  background: var(--campo-fondo);
+}
+
+/* Fila elegida (ej.: el paciente que se está viendo) */
+.tabla tr.elegido td {
+  background: var(--azul-fondo);
+}
+
+/* Botones más chicos dentro de las tablas */
+.tabla .btn {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+/* Grupo de botones */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* En una celda, los botones van a la derecha */
+td.acciones {
+  display: table-cell;
+  text-align: right;
+  white-space: nowrap;
+}
+
+td.acciones .btn + .btn {
+  margin-left: 8px;
+}
+
+/* ---------- Chips de estado de turno ----------
+   Se usan con: <span class="estado confirmado">CONFIRMADO</span> */
+.estado {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radio-chip);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.02em;
+  background: var(--fondo);
+  color: var(--texto-secundario);
+}
+
+.estado.confirmado {
+  background: var(--azul-fondo);
+  color: var(--azul);
+}
+
+.estado.atendido {
+  background: var(--verde-fondo);
+  color: var(--verde);
+}
+
+.estado.cancelado {
+  background: var(--rojo-fondo);
+  color: var(--rojo);
+}
+
+/* Motivo de cancelación debajo del chip */
+td > .motivo {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+/* ---------- Pantallas de acceso (login, registro, recuperar) ----------
+   El armado general (panel azul + columna del formulario) está en
+   shared/layout-acceso. Acá van las piezas que cada pantalla pone adentro. */
+
+/* Tarjeta del formulario de acceso */
+.tarjeta-acceso {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  width: 100%;
+  max-width: 510px;
+  margin: 0;
+  padding: 38px 42px 34px;
+}
+
+/* Introducción: identificador + título + texto */
+.intro-tarjeta h2 {
+  margin: 0 0 10px;
+  font-size: 30px;
+}
+
+.intro-tarjeta p:last-child {
+  margin: 0;
+  font-size: 15px;
+  color: var(--texto-secundario);
+}
+
+/* Bloque de abajo de la tarjeta: texto centrado + botón secundario */
+.grupo-secundario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.grupo-secundario p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--texto-secundario);
+}
+
+/* Recuadro translúcido del panel azul (va proyectado dentro del layout de acceso) */
+.recuadro-panel {
+  align-self: stretch; /* ocupa todo el ancho del panel */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+  border-radius: var(--radio-tarjeta);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+/* Brillo circular decorativo abajo a la derecha del recuadro */
+.recuadro-panel::after {
+  content: '';
+  position: absolute;
+  right: -43px;
+  bottom: -95px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.recuadro-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.recuadro-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Cuadradito translúcido con un ícono adentro */
+.recuadro-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.recuadro-icono .icono {
+  width: 17px;
+  height: 17px;
+}
+
+/* Chip verde (ej.: "Operativo") */
+.chip-verde {
+  padding: 6px 10px;
+  border-radius: var(--radio-chip);
+  background: var(--verde-chip-fondo);
+  color: var(--verde-chip-texto);
+  font-size: 11px;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+/* Lista de beneficios del registro */
+.beneficios {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beneficios li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.beneficios strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.beneficios span:not(.icono) {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--texto-sobre-azul);
+}
+
+/* En pantallas chicas el panel azul queda arriba y compacto: se oculta el recuadro */
+@media (max-width: 900px) {
+  .recuadro-panel {
+    display: none;
+  }
+
+  .tarjeta-acceso {
+    padding: 28px 20px;
+  }
+
+  .intro-tarjeta h2 {
+    font-size: 26px;
+  }
+}
+
+/* En celulares las tarjetas internas usan menos margen */
+@media (max-width: 600px) {
+  .tarjeta {
+    padding: 22px 16px;
+  }
+
+  .tarjeta h2 {
+    font-size: 24px;
+  }
 }

@@ -1,10 +1,7 @@
-/* Los estilos de .tarjeta, .formulario, .campo, .btn y .mensaje-error son globales (src/styles.css)
-   para que todas las pantallas se vean igual. Acá solo lo propio del login. */
-.tarjeta {
-  max-width: 400px;
-}
+/* Todo lo visual del login es global (src/styles.css) o del layout de acceso
+   (shared/layout-acceso). Acá solo lo propio del login. */
 
-.enlaces {
-  margin: 12px 0 0;
-  font-size: 0.92rem;
+/* El aviso del candado queda pegado al botón, como en el diseño */
+.formulario .aviso {
+  margin-top: -8px;
 }

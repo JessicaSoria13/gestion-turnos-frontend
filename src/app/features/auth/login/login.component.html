@@ -1,46 +1,115 @@
-<section class="tarjeta">
-  <h2>Ingresar</h2>
-
-  <form (ngSubmit)="iniciarSesion()" #formLogin="ngForm" class="formulario">
-    <div class="campo">
-      <label for="dni">DNI</label>
-      <input type="text" id="dni" name="dni" [(ngModel)]="dni" required autocomplete="username" />
+<app-layout-acceso
+  chip="Acceso seguro y unificado"
+  titulo="Tus turnos, en un solo lugar"
+  descripcion="Consultá, reservá y seguí tus turnos médicos desde un solo lugar."
+>
+  <!-- Recuadro del panel azul -->
+  <div class="recuadro-panel" recuadro>
+    <div class="recuadro-encabezado">
+      <p class="recuadro-titulo">
+        <span class="recuadro-icono"><span class="icono icono-file-check" aria-hidden="true"></span></span>
+        Área personal
+      </p>
+      <span class="chip-verde">Operativo</span>
     </div>
+  </div>
 
-    <div class="campo">
-      <label for="contrasena">Contraseña</label>
-      <input
-        type="password"
-        id="contrasena"
-        name="contrasena"
-        [(ngModel)]="contrasena"
-        required
-        autocomplete="current-password"
-      />
-    </div>
+  <section class="tarjeta tarjeta-acceso">
+    <header class="intro-tarjeta">
+      <p class="identificador">Área personal</p>
+      <h2>Te damos la bienvenida</h2>
+      <p>Iniciá sesión para acceder a tus turnos, consultas y coberturas.</p>
+    </header>
 
-    @if (pedirRol()) {
+    <form (ngSubmit)="iniciarSesion()" #formLogin="ngForm" class="formulario">
       <div class="campo">
-        <label for="rol">Ingresar como</label>
-        <select id="rol" name="rol" [(ngModel)]="rol" required>
-          <option value="">Elegí un rol</option>
-          <option value="PACIENTE">Paciente</option>
-          <option value="ADMINISTRADOR">Administrador</option>
-        </select>
+        <label for="dni">DNI</label>
+        <div class="control control-grande">
+          <span class="icono icono-id-card" aria-hidden="true"></span>
+          <input
+            type="text"
+            id="dni"
+            name="dni"
+            [(ngModel)]="dni"
+            required
+            autocomplete="username"
+            placeholder="Ingresá tu DNI"
+          />
+        </div>
+        <p class="ayuda-campo">Sin puntos ni espacios.</p>
       </div>
-    }
 
-    @if (mensajeError()) {
-      <p class="mensaje-error">{{ mensajeError() }}</p>
-    }
+      <div class="campo">
+        <div class="campo-cabecera">
+          <label for="contrasena">Contraseña</label>
+          <a routerLink="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
+        </div>
+        <div class="control control-grande">
+          <span class="icono icono-lock-keyhole" aria-hidden="true"></span>
+          <input
+            [type]="verContrasena() ? 'text' : 'password'"
+            id="contrasena"
+            name="contrasena"
+            [(ngModel)]="contrasena"
+            required
+            autocomplete="current-password"
+            placeholder="Ingresá tu contraseña"
+          />
+          <button
+            type="button"
+            class="boton-ojo"
+            [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            (click)="verContrasena.set(!verContrasena())"
+          >
+            <span
+              class="icono"
+              [class.icono-eye]="!verContrasena()"
+              [class.icono-eye-off]="verContrasena()"
+              aria-hidden="true"
+            ></span>
+          </button>
+        </div>
+        <p class="ayuda-campo">Distingue mayúsculas y minúsculas.</p>
+      </div>
 
-    <button type="submit" class="btn btn-primario" [disabled]="formLogin.invalid || cargando()">
-      {{ cargando() ? 'Ingresando...' : 'Ingresar' }}
-    </button>
-  </form>
+      @if (pedirRol()) {
+        <div class="campo">
+          <label for="rol">Ingresar como</label>
+          <div class="control control-grande">
+            <span class="icono icono-user" aria-hidden="true"></span>
+            <select id="rol" name="rol" [(ngModel)]="rol" required>
+              <option value="">Elegí un rol</option>
+              <option value="PACIENTE">Paciente</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+            </select>
+          </div>
+        </div>
+      }
 
-  <p class="enlaces">
-    <a routerLink="/recuperar-contrasena">¿Olvidaste tu contraseña?</a>
-  </p>
-  <p class="enlaces">¿No tenés cuenta? <a routerLink="/registro">Registrarme</a></p>
-</section>
+      @if (mensajeError()) {
+        <p class="mensaje-error">{{ mensajeError() }}</p>
+      }
+
+      <button
+        type="submit"
+        class="btn btn-primario btn-bloque"
+        [disabled]="formLogin.invalid || cargando()"
+      >
+        {{ cargando() ? 'Ingresando...' : 'Iniciar sesión' }}
+        <span class="icono icono-arrow-right" aria-hidden="true"></span>
+      </button>
+
+      <p class="aviso">
+        <span class="icono icono-lock" aria-hidden="true"></span>
+        Nunca te vamos a pedir tu contraseña por correo o teléfono.
+      </p>
+    </form>
+
+    <div class="separador">¿Todavía no tenés cuenta?</div>
+
+    <div class="grupo-secundario">
+      <p>Creá tu cuenta para empezar a gestionar tus turnos.</p>
+      <a routerLink="/registro" class="btn btn-secundario btn-bloque">Registrarse</a>
+    </div>
+  </section>
+</app-layout-acceso>

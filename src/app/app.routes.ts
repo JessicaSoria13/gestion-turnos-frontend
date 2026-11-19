@@ -2,21 +2,17 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegistroComponent } from './features/auth/registro/registro.component';
 import { RecuperarContrasenaComponent } from './features/auth/recuperar-contrasena/recuperar-contrasena.component';
-import { EnConstruccionComponent } from './features/en-construccion/en-construccion.component';
 import { rolGuard } from './core/guards/auth.guard';
 import { Agenda } from './features/agenda/agenda/agenda';
 import { ReservarTurnoComponent } from './features/turnos/reservar-turno/reservar-turno.component';
 import { MisTurnosComponent } from './features/turnos/mis-turnos/mis-turnos.component';
 import { PacientesComponent } from './features/pacientes/pacientes.component';
-
 import { HistorialComponent } from './features/historial/historial.component';
+
 /**
  * Rutas del Frontend.
  * - Públicas: /login, /registro, /recuperar-contrasena.
  * - /paciente/... solo para PACIENTE y /admin/... solo para ADMINISTRADOR (rolGuard).
- *
- * Las pantallas que todavía no existen usan EnConstruccionComponent: cuando una integrante
- * termina la suya, reemplaza `component` y `data` de SU ruta (una sola línea).
  */
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -42,7 +38,7 @@ export const routes: Routes = [
     canActivate: [rolGuard('ADMINISTRADOR')],
     children: [
       { path: 'agenda', component: Agenda },
-       { path: 'pacientes', component: PacientesComponent },
+      { path: 'pacientes', component: PacientesComponent },
       { path: 'historial', component: HistorialComponent },
     ],
   },

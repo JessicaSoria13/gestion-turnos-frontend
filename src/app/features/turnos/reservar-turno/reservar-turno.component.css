@@ -1,13 +1,16 @@
-/* .tarjeta, .formulario, .campo, .btn, .mensaje-error y .mensaje-exito son globales (src/styles.css).
+/* .tarjeta, .formulario, .campo, .btn y los mensajes son globales (src/styles.css).
    Acá solo lo propio de reservar turno. */
 .tarjeta {
-  max-width: 520px;
+  max-width: 560px;
 }
 
-.etiqueta {
-  font-weight: 600;
+/* Mensajes de arriba del formulario (turno reservado o error al cargar) */
+.tarjeta > .mensaje-exito,
+.tarjeta > .mensaje-error {
+  margin-bottom: 20px;
 }
 
+/* Botones de horarios libres */
 .horarios {
   display: flex;
   flex-wrap: wrap;
@@ -15,16 +18,30 @@
 }
 
 .horario {
-  padding: 6px 12px;
-  border: 1px solid #1e4fa3;
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
+  min-width: 72px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--borde-campo);
+  border-radius: var(--radio-campo);
+  background: var(--superficie);
+  color: var(--texto);
   font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
+.horario:hover {
+  border-color: var(--azul);
+  color: var(--azul);
+}
+
+/* Horario elegido: azul lleno */
 .horario.elegido {
-  background: #1e4fa3;
-  color: #fff;
+  background: var(--azul);
+  border-color: var(--azul);
+  color: #ffffff;
 }

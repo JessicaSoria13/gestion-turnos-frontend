@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { detallesDeError, mensajeDeError } from '../../../core/utils/errores';
+import { LayoutAcceso } from '../../../shared/layout-acceso/layout-acceso';
 
 /**
  * Pantalla de Recuperar contraseña (pública), en dos pasos:
@@ -13,7 +14,7 @@ import { detallesDeError, mensajeDeError } from '../../../core/utils/errores';
 @Component({
   selector: 'app-recuperar-contrasena',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LayoutAcceso],
   templateUrl: './recuperar-contrasena.component.html',
   styleUrl: './recuperar-contrasena.component.css',
 })
@@ -31,6 +32,9 @@ export class RecuperarContrasenaComponent {
   mensajeError = signal<string | null>(null);
   detalles = signal<string[]>([]);
   mensajeExito = signal<string | null>(null);
+  // Solo visual: los botones ojo alternan entre ver y ocultar cada contraseña
+  verContrasena = signal<boolean>(false);
+  verRepetir = signal<boolean>(false);
 
   /** Paso 1: POST /api/v1/auth/recuperar-contrasena/solicitar */
   solicitarCodigo(): void {

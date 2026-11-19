@@ -1,0 +1,6 @@
+<svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Símbolo de NEXA Salud: cruz redondeada + punto celeste.
+     Ocupa todo el cuadrado de la marca (el fondo blanco lo pone el CSS en .marca-simbolo). -->
+<path d="M12.35 21H25.65M19 14.35V27.65" stroke="#185FA6" stroke-width="7.3" stroke-linecap="round"/>
+<circle cx="29.5" cy="12" r="3.4" fill="#8CC4F2"/>
+</svg>

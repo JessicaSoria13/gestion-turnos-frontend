@@ -1,4 +1,5 @@
 <section class="tarjeta">
+  <p class="identificador">Área personal</p>
   <h2>Reservar turno</h2>
 
   @if (cargandoInicio()) {
@@ -87,7 +88,7 @@
         <p class="mensaje-error">{{ mensajeError() }}</p>
       }
 
-      <button type="submit" class="btn btn-primario" [disabled]="!hora() || reservando()">
+      <button type="submit" class="btn btn-primario btn-bloque" [disabled]="!hora() || reservando()">
         {{ textoBoton() }}
       </button>
     </form>

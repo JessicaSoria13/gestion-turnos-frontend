@@ -1,0 +1,213 @@
+/* Layout de las pantallas de acceso. Las piezas que pone cada pantalla
+   (tarjeta-acceso, recuadro-panel, campos, botones) están en src/styles.css. */
+
+/* Toda la pantalla: panel a la izquierda y formulario a la derecha */
+.acceso {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Panel azul ---------- */
+.panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  /* Ancho del Figma (660px) como máximo; en pantallas medianas se achica
+     para dejarle lugar a la tarjeta. min() elige el menor de los dos valores. */
+  width: min(660px, 46vw);
+  flex-shrink: 0;
+  /* clamp(mínimo, ideal, máximo): el padding lateral se achica con la pantalla */
+  padding: 52px clamp(32px, 4.5vw, 64px) 48px;
+  background: var(--degrade-panel);
+  color: #ffffff;
+}
+
+/* En el registro el panel es más angosto (la tarjeta tiene 2 columnas) */
+:host(.variante-registro) .panel {
+  width: min(560px, 38vw);
+}
+
+/* Todo el contenido queda por encima de las formas decorativas */
+.panel > :not(.halo):not(.plano) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Halo circular arriba a la derecha */
+.halo {
+  position: absolute;
+  top: -190px;
+  right: -152px;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.063);
+}
+
+/* Cuadrado redondeado rotado abajo a la izquierda */
+.plano {
+  position: absolute;
+  left: -207px;
+  bottom: 47px;
+  width: 360px;
+  height: 360px;
+  border-radius: 56px;
+  background: rgba(10, 49, 92, 0.15);
+  transform: rotate(26deg);
+}
+
+/* Bloque del medio: chip + título + texto + recuadro */
+.mensaje {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+/* Chip translúcido con el puntito verde */
+.distintivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: var(--radio-chip);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8fe3c0;
+}
+
+.panel-titulo {
+  margin: 0;
+  font-size: clamp(34px, 3.4vw, 48px);
+  font-weight: 700;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+:host(.variante-registro) .panel-titulo {
+  font-size: clamp(32px, 3.1vw, 44px);
+}
+
+.panel-texto {
+  max-width: 474px;
+  margin: 0 0 16px;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--texto-sobre-azul);
+}
+
+/* Garantías de abajo */
+.garantias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11px;
+  color: var(--texto-sobre-azul);
+}
+
+.garantias li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.garantias .icono {
+  width: 15px;
+  height: 15px;
+}
+
+/* ---------- Columna del formulario ---------- */
+.zona-formulario {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 42px clamp(24px, 4vw, 56px) 32px;
+  background: var(--fondo);
+}
+
+.conexion-segura {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.conexion-segura .icono {
+  width: 17px;
+  height: 17px;
+  color: #287a5a;
+}
+
+/* La tarjeta queda centrada en el espacio libre */
+.zona-tarjeta {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pie-acceso {
+  font-size: 11px;
+  color: var(--texto-suave);
+}
+
+/* ---------- Pantallas chicas (menos de 900px) ----------
+   El panel pasa arriba, compacto (solo marca, chip y título),
+   y el formulario ocupa todo el ancho. */
+@media (max-width: 900px) {
+  .acceso {
+    flex-direction: column;
+  }
+
+  .panel,
+  :host(.variante-registro) .panel {
+    width: auto;
+    gap: 20px;
+    padding: 24px 20px 28px;
+  }
+
+  .mensaje {
+    gap: 12px;
+  }
+
+  .panel-titulo,
+  :host(.variante-registro) .panel-titulo {
+    font-size: 28px;
+  }
+
+  .panel-texto,
+  .garantias {
+    display: none;
+  }
+
+  .zona-formulario {
+    gap: 20px;
+    padding: 20px 16px 24px;
+  }
+
+  /* La tarjeta arranca arriba (no se centra en el alto de la pantalla) */
+  .zona-tarjeta {
+    align-items: flex-start;
+  }
+}
