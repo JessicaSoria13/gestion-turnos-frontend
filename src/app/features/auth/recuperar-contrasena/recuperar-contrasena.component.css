@@ -2,7 +2,7 @@
    El panel azul y la columna del formulario están en shared/layout-acceso.
    Acá solo lo propio de recuperar contraseña. */
 
-/* "¿No te llegó o venció? Pedir otro código" */
+/* "¿Ya recibiste el email? Ya tengo un código" (paso 1) y "¿No te llegó o venció? Pedir otro código" (paso 2) */
 .otro-codigo {
   margin: -8px 0 0;
   font-size: 13px;
@@ -10,7 +10,7 @@
   color: var(--texto-secundario);
 }
 
-/* Botón con aspecto de enlace (para "Pedir otro código") */
+/* Botón con aspecto de enlace ("Ya tengo un código" y "Pedir otro código") */
 .link {
   background: none;
   border: none;
