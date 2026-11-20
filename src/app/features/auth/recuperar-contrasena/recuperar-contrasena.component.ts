@@ -8,7 +8,8 @@ import { LayoutAcceso } from '../../../shared/layout-acceso/layout-acceso';
 /**
  * Pantalla de Recuperar contraseña (pública), en dos pasos:
  * 1. 'solicitar': el paciente ingresa su email y el backend le manda un código (vence en 30 minutos).
- * 2. 'confirmar': ingresa el código y la contraseña nueva.
+ * 2. 'confirmar': ingresa el código y la contraseña nueva. Si ya tiene un código (por ejemplo, cerró la
+ *    pestaña después de pedirlo), entra directo con "Ya tengo un código".
  * Al terminar ('listo') muestra el mensaje de éxito y el enlace para ingresar.
  */
 @Component({
@@ -69,6 +70,12 @@ export class RecuperarContrasenaComponent {
         },
         error: (err: unknown) => this.mostrarError(err),
       });
+  }
+
+  /** Va al paso 2 sin pedir un código nuevo: el código del email sigue valiendo hasta que vence. */
+  yaTengoCodigo(): void {
+    this.limpiarMensajes();
+    this.paso.set('confirmar');
   }
 
   /** Vuelve al paso 1 (por ejemplo, si no llegó el email o el código venció). */
