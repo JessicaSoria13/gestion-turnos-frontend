@@ -5,13 +5,14 @@ import { forkJoin } from 'rxjs';
 import { MedicoService } from '../../../core/services/medico.service';
 import { TurnoService } from '../../../core/services/turno.service';
 import { Turno } from '../../../core/models/turno.model';
+import { ToastService } from '../../../core/services/toast.service';
 import { mensajeDeError } from '../../../core/utils/errores';
 import { fechaLocal, formatearFecha } from '../fechas';
 
 /**
  * Mis turnos (solo PACIENTE): GET /turnos/mis-turnos.
  * Los turnos CONFIRMADOS de hoy en adelante se pueden cancelar (PUT /turnos/{id}/cancelar)
- * con un motivo opcional; el horario vuelve a quedar libre.
+ * con un motivo opcional; el horario vuelve a quedar libre. Los resultados se avisan con toasts.
  */
 @Component({
   selector: 'app-mis-turnos',
@@ -23,6 +24,7 @@ import { fechaLocal, formatearFecha } from '../fechas';
 export class MisTurnosComponent implements OnInit {
   private readonly turnoService = inject(TurnoService);
   private readonly medicoService = inject(MedicoService);
+  private readonly toast = inject(ToastService);
 
   readonly hoy = fechaLocal(new Date());
   readonly formatearFecha = formatearFecha;
@@ -36,8 +38,8 @@ export class MisTurnosComponent implements OnInit {
   motivoCancelacion = '';
   cancelando = signal<boolean>(false);
 
-  mensajeError = signal<string | null>(null);
-  mensajeExito = signal<string | null>(null);
+  // true si no se pudieron traer los turnos (el aviso sale como toast)
+  errorCarga = signal<boolean>(false);
 
   ngOnInit(): void {
     this.cargar();
@@ -49,8 +51,6 @@ export class MisTurnosComponent implements OnInit {
   }
 
   pedirCancelacion(turno: Turno): void {
-    this.mensajeError.set(null);
-    this.mensajeExito.set(null);
     this.motivoCancelacion = '';
     this.idCancelando.set(turno.id);
   }
@@ -67,7 +67,7 @@ export class MisTurnosComponent implements OnInit {
         next: () => {
           this.cancelando.set(false);
           this.idCancelando.set(null);
-          this.mensajeExito.set(
+          this.toast.exito(
             `Turno del ${formatearFecha(turno.fecha)} a las ${turno.hora.slice(0, 5)} cancelado. ` +
               'El horario vuelve a estar disponible.',
           );
@@ -75,7 +75,7 @@ export class MisTurnosComponent implements OnInit {
         },
         error: (err: unknown) => {
           this.cancelando.set(false);
-          this.mensajeError.set(mensajeDeError(err));
+          this.toast.error(mensajeDeError(err));
         },
       });
   }
@@ -96,7 +96,8 @@ export class MisTurnosComponent implements OnInit {
       },
       error: (err: unknown) => {
         this.turnos.set([]);
-        this.mensajeError.set(mensajeDeError(err));
+        this.errorCarga.set(true);
+        this.toast.error(mensajeDeError(err));
       },
     });
   }

@@ -2,10 +2,6 @@
   <p class="identificador">Administración</p>
   <h2>Historial clínico</h2>
 
-  @if (mensajeError() && !turnoAbierto() && !turnoEnRegistro()) {
-    <p class="mensaje-error">{{ mensajeError() }}</p>
-  }
-
   <div class="campo selector">
     <label for="paciente">Paciente</label>
     <select id="paciente" name="paciente" [(ngModel)]="idPaciente" (ngModelChange)="cargarTurnos()">
@@ -69,7 +65,7 @@
   }
 
   @if (turnoEnRegistro(); as turno) {
-    <div class="detalle">
+    <div class="detalle destino-scroll" id="panel-atencion">
       <div class="detalle-encabezado">
         <h3>
           Registrar atención del {{ formatearFecha(turno.fecha) }} a las
@@ -98,26 +94,16 @@
           </button>
         </div>
       </form>
-
-      @if (mensajeError()) {
-        <p class="mensaje-error">{{ mensajeError() }}</p>
-      }
     </div>
   }
 
   @if (turnoAbierto(); as turno) {
-    <div class="detalle">
+    <div class="detalle destino-scroll" id="panel-consulta">
       <div class="detalle-encabezado">
         <h3>Consulta del {{ formatearFecha(turno.fecha) }} a las {{ turno.hora.slice(0, 5) }}</h3>
         <button type="button" class="btn btn-secundario" (click)="cerrarConsulta()">Cerrar</button>
       </div>
 
-      @if (mensajeError()) {
-        <p class="mensaje-error">{{ mensajeError() }}</p>
-      }
-      @if (mensajeExito()) {
-        <p class="mensaje-exito">{{ mensajeExito() }}</p>
-      }
 
       @if (cargandoConsulta()) {
         <p>Cargando...</p>
@@ -152,7 +138,8 @@
 
             @if (idDiagnosticoConFormulario() === d.diagnostico.id) {
               <form
-                class="formulario fila alta"
+                class="formulario fila alta destino-scroll"
+                id="form-tratamiento-{{ d.diagnostico.id }}"
                 #formTratamiento="ngForm"
                 (ngSubmit)="agregarTratamiento()"
               >
@@ -164,7 +151,6 @@
                     name="tratamientoDescripcion"
                     [(ngModel)]="tratamientoDescripcion"
                     placeholder="Ej.: ibuprofeno 400 mg cada 8 h"
-                    required
                   />
                 </div>
                 <div class="campo duracion">
@@ -182,7 +168,7 @@
                   <button
                     type="submit"
                     class="btn btn-primario"
-                    [disabled]="formTratamiento.invalid || guardando()"
+                    [disabled]="tratamientoDescripcion.trim() === '' || guardando()"
                   >
                     Guardar
                   </button>
@@ -220,14 +206,13 @@
               name="nuevoDiagnostico"
               [(ngModel)]="nuevoDiagnostico"
               placeholder="Ej.: faringitis aguda"
-              required
             />
           </div>
           <div class="acciones">
             <button
               type="submit"
               class="btn btn-primario"
-              [disabled]="formDiagnostico.invalid || guardando()"
+              [disabled]="nuevoDiagnostico.trim() === '' || guardando()"
             >
               Agregar diagnóstico
             </button>

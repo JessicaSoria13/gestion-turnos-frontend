@@ -1,0 +1,21 @@
+<div class="toasts">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div
+      class="toast"
+      [class.toast-exito]="toast.tipo === 'exito'"
+      [class.toast-error]="toast.tipo === 'error'"
+      [attr.role]="toast.tipo === 'error' ? 'alert' : 'status'"
+    >
+      <span class="toast-icono" aria-hidden="true">{{ toast.tipo === 'error' ? '!' : '✓' }}</span>
+      <p class="toast-texto">{{ toast.texto }}</p>
+      <button
+        type="button"
+        class="toast-cerrar"
+        aria-label="Cerrar aviso"
+        (click)="toastService.cerrar(toast.id)"
+      >
+        ×
+      </button>
+    </div>
+  }
+</div>

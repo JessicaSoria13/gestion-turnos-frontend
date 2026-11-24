@@ -2,17 +2,10 @@
   <p class="identificador">Área personal</p>
   <h2>Mis turnos</h2>
 
-  @if (mensajeExito()) {
-    <p class="mensaje-exito">{{ mensajeExito() }}</p>
-  }
-  @if (mensajeError()) {
-    <p class="mensaje-error">{{ mensajeError() }}</p>
-  }
-
   @if (turnos() === null) {
     <p>Cargando...</p>
   } @else if (turnos()!.length === 0) {
-    @if (!mensajeError()) {
+    @if (!errorCarga()) {
       <p>Todavía no tenés turnos. <a routerLink="/paciente/reservar">Reservar uno</a></p>
     }
   } @else {

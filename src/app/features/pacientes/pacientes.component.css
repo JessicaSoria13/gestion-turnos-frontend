@@ -1,11 +1,6 @@
-/* .tarjeta, .tabla, .formulario.fila, .campo, .btn, .acciones y los mensajes
-   son globales (src/styles.css). Acá solo lo propio de pacientes. */
+/* .tarjeta, .tabla, .formulario.fila, .campo y .btn son globales (src/styles.css).
+   Los avisos son toasts. Acá solo lo propio de pacientes. */
 .tarjeta {
   max-width: 900px;
 }
 
-/* Separación entre los mensajes y la tabla */
-.mensaje-error,
-.mensaje-exito {
-  margin-bottom: 16px;
-}

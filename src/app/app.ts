@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { AuthService } from './core/services/auth.service';
+import { Toasts } from './shared/toasts/toasts';
 
 interface Enlace {
   ruta: string;
@@ -16,6 +17,7 @@ const ENLACES_POR_ROL: Record<string, Enlace[]> = {
     { ruta: '/paciente/mis-turnos', texto: 'Mis turnos' },
   ],
   ADMINISTRADOR: [
+    { ruta: '/admin/turnos', texto: 'Turnos del día' },
     { ruta: '/admin/agenda', texto: 'Agenda' },
     { ruta: '/admin/pacientes', texto: 'Pacientes' },
     { ruta: '/admin/historial', texto: 'Historial clínico' },
@@ -33,7 +35,7 @@ const RUTAS_PUBLICAS = ['/login', '/registro', '/recuperar-contrasena'];
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Toasts],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

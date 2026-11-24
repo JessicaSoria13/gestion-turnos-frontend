@@ -1,0 +1,45 @@
+/* .tarjeta, .tabla, .campo, .btn y los chips de .estado son globales (src/styles.css).
+   Acá solo lo propio de los turnos del día. */
+.tarjeta {
+  max-width: 980px;
+}
+
+/* Anterior · fecha · Siguiente · Hoy, en una fila */
+.selector-dia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.campo-dia {
+  width: 220px;
+}
+
+.resumen,
+.sin-turnos {
+  margin: 0 0 14px;
+  color: var(--texto-secundario);
+  font-size: 14px;
+}
+
+.hora {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.detalle-chico {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--texto-suave);
+}
+
+/* Fila que se abre abajo del turno para escribir el motivo de la cancelación */
+.tabla .fila-cancelar td {
+  background: var(--azul-fondo);
+}
+
+.fila-cancelar .acciones {
+  margin-top: 12px;
+}

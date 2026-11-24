@@ -1,6 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { CampoFecha } from '../../../shared/campo-fecha/campo-fecha';
 import { forkJoin, switchMap } from 'rxjs';
 import { Medico, MedicoService } from '../../../core/services/medico.service';
@@ -8,7 +7,8 @@ import { DisponibilidadService } from '../../../core/services/disponibilidad.ser
 import { PacienteService } from '../../../core/services/paciente.service';
 import { TurnoService } from '../../../core/services/turno.service';
 import { DiaSemana, Disponibilidad } from '../../../core/models/agenda.model';
-import { Cobertura, Paciente, Turno } from '../../../core/models/turno.model';
+import { Cobertura, Paciente } from '../../../core/models/turno.model';
+import { ToastService } from '../../../core/services/toast.service';
 import { mensajeDeError } from '../../../core/utils/errores';
 import { fechaLocal, formatearFecha } from '../fechas';
 
@@ -24,7 +24,7 @@ const DIAS: DiaSemana[] = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 
 @Component({
   selector: 'app-reservar-turno',
   standalone: true,
-  imports: [FormsModule, RouterLink, CampoFecha],
+  imports: [FormsModule, CampoFecha],
   templateUrl: './reservar-turno.component.html',
   styleUrl: './reservar-turno.component.css',
 })
@@ -33,6 +33,7 @@ export class ReservarTurnoComponent implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly disponibilidadService = inject(DisponibilidadService);
   private readonly turnoService = inject(TurnoService);
+  private readonly toast = inject(ToastService);
 
   readonly hoy = fechaLocal(new Date());
   readonly formatearFecha = formatearFecha;
@@ -56,8 +57,9 @@ export class ReservarTurnoComponent implements OnInit {
 
   cargandoInicio = signal<boolean>(true);
   reservando = signal<boolean>(false);
+  // Solo para el error de carga inicial (sin ficha de paciente no se puede reservar).
+  // Los resultados de buscar horarios y reservar se avisan con toasts.
   mensajeError = signal<string | null>(null);
-  turnoReservado = signal<Turno | null>(null);
 
   textoBoton = computed(() => {
     if (this.reservando()) {
@@ -108,8 +110,6 @@ export class ReservarTurnoComponent implements OnInit {
   /** Al cambiar médico o fecha se borra el horario elegido y se vuelven a pedir los libres. */
   private reiniciarHorario(): void {
     this.hora.set('');
-    this.mensajeError.set(null);
-    this.turnoReservado.set(null);
     this.buscarHorarios();
   }
 
@@ -122,12 +122,11 @@ export class ReservarTurnoComponent implements OnInit {
     if (!paciente || !this.idMedico || !this.hora()) {
       return;
     }
-    this.mensajeError.set(null);
 
     // El backend pide el id de la franja semanal (disponibilidad) que contiene ese día y horario
     const disponibilidad = this.buscarDisponibilidad();
     if (!disponibilidad) {
-      this.mensajeError.set('No se encontró la disponibilidad del médico para ese horario');
+      this.toast.error('No se encontró la disponibilidad del médico para ese horario');
       return;
     }
 
@@ -145,7 +144,10 @@ export class ReservarTurnoComponent implements OnInit {
       .subscribe({
         next: (turno) => {
           this.reservando.set(false);
-          this.turnoReservado.set(turno);
+          this.toast.exito(
+            `Turno reservado para el ${formatearFecha(turno.fecha)} a las ${turno.hora.slice(0, 5)}. ` +
+              'Lo ves en "Mis turnos".',
+          );
           this.hora.set('');
           this.motivo = '';
           // El horario reservado ya no está libre
@@ -153,7 +155,7 @@ export class ReservarTurnoComponent implements OnInit {
         },
         error: (err: unknown) => {
           this.reservando.set(false);
-          this.mensajeError.set(mensajeDeError(err));
+          this.toast.error(mensajeDeError(err));
         },
       });
   }
@@ -181,7 +183,7 @@ export class ReservarTurnoComponent implements OnInit {
       },
       error: (err: unknown) => {
         this.horarios.set([]);
-        this.mensajeError.set(mensajeDeError(err));
+        this.toast.error(mensajeDeError(err));
       },
     });
   }

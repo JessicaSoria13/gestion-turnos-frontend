@@ -7,13 +7,6 @@
   } @else if (!paciente()) {
     <p class="mensaje-error">{{ mensajeError() }}</p>
   } @else {
-    @if (turnoReservado(); as turno) {
-      <p class="mensaje-exito">
-        Turno reservado para el {{ formatearFecha(turno.fecha) }} a las {{ turno.hora.slice(0, 5) }}.
-        <a routerLink="/paciente/mis-turnos">Ver mis turnos</a>
-      </p>
-    }
-
     <form (ngSubmit)="reservar()" class="formulario">
       <div class="campo">
         <label for="medico">Médico</label>
@@ -83,10 +76,6 @@
         <label for="motivo">Motivo de la consulta (opcional)</label>
         <textarea id="motivo" name="motivo" [(ngModel)]="motivo" maxlength="255" rows="3"></textarea>
       </div>
-
-      @if (mensajeError()) {
-        <p class="mensaje-error">{{ mensajeError() }}</p>
-      }
 
       <button type="submit" class="btn btn-primario btn-bloque" [disabled]="!hora() || reservando()">
         {{ textoBoton() }}

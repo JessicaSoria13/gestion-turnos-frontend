@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { HistorialComponent } from './historial.component';
 import { HistorialService } from '../../core/services/historial.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Turno } from '../../core/models/turno.model';
 import { fechaLocal } from '../turnos/fechas';
 
@@ -38,6 +40,7 @@ describe('HistorialComponent: registrar atención', () => {
     await TestBed.configureTestingModule({
       imports: [HistorialComponent],
       providers: [
+        provideRouter([]),
         {
           provide: HistorialService,
           useValue: { listarPacientes: () => of([]), registrarConsulta },
@@ -68,6 +71,8 @@ describe('HistorialComponent: registrar atención', () => {
     component.turnoEnRegistro.set(turno({ fecha: diaRelativo(2) }));
     component.registrarAtencion();
     expect(registrarConsulta).not.toHaveBeenCalled();
-    expect(component.mensajeError()).toContain('antes de la fecha del turno');
+    const avisos = TestBed.inject(ToastService).toasts();
+    expect(avisos.at(-1)?.tipo).toBe('error');
+    expect(avisos.at(-1)?.texto).toContain('antes de la fecha del turno');
   });
 });

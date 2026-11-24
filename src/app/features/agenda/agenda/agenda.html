@@ -1,8 +1,3 @@
-<!-- Errores generales (ej.: no se pudo cargar el médico). Los de cada parte se muestran junto a su formulario -->
-@if (seccionMensaje() === 'general' && mensajeError()) {
-  <p class="mensaje-error">{{ mensajeError() }}</p>
-}
-
 <section class="tarjeta">
   <p class="identificador">Agenda</p>
   <h2>Disponibilidad semanal</h2>
@@ -41,7 +36,9 @@
     </div>
   }
 
-  <h3>{{ idEditando() === null ? 'Cargar una franja' : 'Editar franja' }}</h3>
+  <h3 class="destino-scroll" id="form-franja">
+    {{ idEditando() === null ? 'Cargar una franja' : 'Editar franja' }}
+  </h3>
 
   <form (ngSubmit)="guardar()" #formDisponibilidad="ngForm" class="formulario fila">
     <div class="campo">
@@ -86,15 +83,6 @@
       }
     </div>
   </form>
-
-  @if (seccionMensaje() === 'disponibilidad') {
-    @if (mensajeError()) {
-      <p class="mensaje-error">{{ mensajeError() }}</p>
-    }
-    @if (mensajeExito()) {
-      <p class="mensaje-exito">{{ mensajeExito() }}</p>
-    }
-  }
 </section>
 
 <section class="tarjeta">
@@ -180,13 +168,4 @@
       </button>
     </div>
   </form>
-
-  @if (seccionMensaje() === 'bloqueos') {
-    @if (mensajeError()) {
-      <p class="mensaje-error">{{ mensajeError() }}</p>
-    }
-    @if (mensajeExito()) {
-      <p class="mensaje-exito">{{ mensajeExito() }}</p>
-    }
-  }
 </section>

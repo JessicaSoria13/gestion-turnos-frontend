@@ -1,10 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { forkJoin, map, of, switchMap } from 'rxjs';
 import { HistorialService } from '../../core/services/historial.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Paciente, Turno } from '../../core/models/turno.model';
 import { ConsultaMedica, DiagnosticoConTratamientos } from '../../core/models/historial.model';
 import { mensajeDeError } from '../../core/utils/errores';
+import { llevarA } from '../../core/utils/scroll';
 import { fechaLocal, formatearFecha } from '../turnos/fechas';
 
 /**
@@ -15,6 +18,8 @@ import { fechaLocal, formatearFecha } from '../turnos/fechas';
  *    (el backend también lo rechaza con 409).
  * 3. En un turno ATENDIDO, "Ver consulta" muestra la consulta, sus diagnósticos
  *    y los tratamientos de cada diagnóstico, y permite agregar diagnósticos y tratamientos.
+ * Desde "Turnos del día" se llega con ?paciente=…&turno=…: se elige ese paciente y se abre el turno.
+ * Los resultados de cada acción se avisan con toasts y la pantalla baja sola al panel que se abre.
  */
 @Component({
   selector: 'app-historial',
@@ -25,6 +30,8 @@ import { fechaLocal, formatearFecha } from '../turnos/fechas';
 })
 export class HistorialComponent implements OnInit {
   private readonly historialService = inject(HistorialService);
+  private readonly toast = inject(ToastService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly formatearFecha = formatearFecha;
 
@@ -51,35 +58,58 @@ export class HistorialComponent implements OnInit {
   tratamientoDuracion = '';
 
   guardando = signal<boolean>(false);
-  mensajeError = signal<string | null>(null);
-  mensajeExito = signal<string | null>(null);
 
   ngOnInit(): void {
+    // Si se llegó desde "Turnos del día", viene el paciente y el turno a abrir
+    const parametros = this.route.snapshot.queryParamMap;
+    const idPacienteInicial = Number(parametros.get('paciente')) || null;
+    const idTurnoInicial = Number(parametros.get('turno')) || null;
+
     this.historialService.listarPacientes().subscribe({
-      next: (lista) =>
+      next: (lista) => {
         this.pacientes.set(
           [...lista].sort((a, b) => a.nombreApellido.localeCompare(b.nombreApellido)),
-        ),
-      error: (err) => this.mensajeError.set(mensajeDeError(err)),
+        );
+        if (idPacienteInicial !== null && lista.some((p) => p.id === idPacienteInicial)) {
+          this.idPaciente = idPacienteInicial;
+          this.turnos.set(null);
+          this.refrescarTurnos((turnos) => {
+            const turno = turnos.find((t) => t.id === idTurnoInicial);
+            if (turno) this.abrirTurno(turno);
+          });
+        }
+      },
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
   /** Se llama cuando cambia el desplegable de paciente. */
   cargarTurnos(): void {
-    this.mensajeError.set(null);
-    this.mensajeExito.set(null);
     this.cerrarConsulta();
+    this.turnoEnRegistro.set(null);
     this.turnos.set(null);
     this.refrescarTurnos();
   }
 
   /** Vuelve a pedir los turnos del paciente sin cerrar lo que está abierto. */
-  private refrescarTurnos(): void {
+  private refrescarTurnos(alTerminar?: (turnos: Turno[]) => void): void {
     if (this.idPaciente === null) return;
     this.historialService.turnosDePaciente(this.idPaciente).subscribe({
-      next: (lista) => this.turnos.set(lista),
-      error: (err) => this.mensajeError.set(mensajeDeError(err)),
+      next: (lista) => {
+        this.turnos.set(lista);
+        alTerminar?.(lista);
+      },
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
+  }
+
+  /** Abre el panel que corresponde al estado del turno (registrar o ver la consulta). */
+  private abrirTurno(turno: Turno): void {
+    if (turno.estado === 'ATENDIDO') {
+      this.verConsulta(turno);
+    } else if (this.puedeRegistrarAtencion(turno)) {
+      this.abrirRegistro(turno);
+    }
   }
 
   /**
@@ -92,10 +122,9 @@ export class HistorialComponent implements OnInit {
 
   abrirRegistro(turno: Turno): void {
     this.cerrarConsulta();
-    this.mensajeError.set(null);
-    this.mensajeExito.set(null);
     this.observaciones = '';
     this.turnoEnRegistro.set(turno);
+    llevarA('panel-atencion');
   }
 
   cancelarRegistro(): void {
@@ -108,12 +137,11 @@ export class HistorialComponent implements OnInit {
     if (turno === null || this.guardando()) return;
     // Doble control: el botón ya no aparece en turnos futuros, pero por las dudas.
     if (!this.puedeRegistrarAtencion(turno)) {
-      this.mensajeError.set('No se puede registrar la atención antes de la fecha del turno.');
+      this.toast.error('No se puede registrar la atención antes de la fecha del turno.');
       return;
     }
 
     this.guardando.set(true);
-    this.mensajeError.set(null);
     const observaciones = this.observaciones.trim() || null;
 
     this.historialService.registrarConsulta(turno.id, observaciones).subscribe({
@@ -122,11 +150,13 @@ export class HistorialComponent implements OnInit {
         this.turnoEnRegistro.set(null);
         this.refrescarTurnos();
         this.verConsulta({ ...turno, estado: 'ATENDIDO' });
-        this.mensajeExito.set('Atención registrada. Ahora podés cargar los diagnósticos.');
+        this.toast.exito('Atención registrada. Ahora podés cargar los diagnósticos.');
       },
       error: (err) => {
         this.guardando.set(false);
-        this.mensajeError.set(mensajeDeError(err));
+        this.toast.error(mensajeDeError(err));
+        // Ej.: 409 "ya tiene una consulta": se actualiza la tabla para mostrar el estado real
+        this.refrescarTurnos();
       },
     });
   }
@@ -138,16 +168,16 @@ export class HistorialComponent implements OnInit {
     if (consulta === null || descripcion === '' || this.guardando()) return;
 
     this.guardando.set(true);
-    this.mensajeError.set(null);
     this.historialService.agregarDiagnostico(consulta.id, descripcion).subscribe({
       next: () => {
         this.guardando.set(false);
         this.nuevoDiagnostico = '';
-        this.recargarConsulta('Diagnóstico agregado.');
+        this.recargarConsulta();
+        this.toast.exito('Diagnóstico agregado.');
       },
       error: (err) => {
         this.guardando.set(false);
-        this.mensajeError.set(mensajeDeError(err));
+        this.toast.error(mensajeDeError(err));
       },
     });
   }
@@ -156,6 +186,7 @@ export class HistorialComponent implements OnInit {
     this.tratamientoDescripcion = '';
     this.tratamientoDuracion = '';
     this.idDiagnosticoConFormulario.set(idDiagnostico);
+    llevarA(`form-tratamiento-${idDiagnostico}`);
   }
 
   cerrarFormularioTratamiento(): void {
@@ -169,39 +200,43 @@ export class HistorialComponent implements OnInit {
     if (idDiagnostico === null || descripcion === '' || this.guardando()) return;
 
     this.guardando.set(true);
-    this.mensajeError.set(null);
     const duracion = this.tratamientoDuracion.trim() || null;
     this.historialService.agregarTratamiento(idDiagnostico, descripcion, duracion).subscribe({
       next: () => {
         this.guardando.set(false);
         this.idDiagnosticoConFormulario.set(null);
-        this.recargarConsulta('Tratamiento agregado.');
+        this.recargarConsulta();
+        this.toast.exito('Tratamiento agregado.');
       },
       error: (err) => {
         this.guardando.set(false);
-        this.mensajeError.set(mensajeDeError(err));
+        this.toast.error(mensajeDeError(err));
       },
     });
   }
 
-  /** Vuelve a cargar la consulta abierta para mostrar lo recién agregado. */
-  private recargarConsulta(mensaje: string): void {
+  /** Vuelve a cargar la consulta abierta para mostrar lo recién agregado, sin mover la pantalla. */
+  private recargarConsulta(): void {
     const turno = this.turnoAbierto();
     if (turno === null) return;
-    this.verConsulta(turno);
-    this.mensajeExito.set(mensaje);
+    this.verConsulta(turno, false);
   }
 
-  verConsulta(turno: Turno): void {
-    this.mensajeError.set(null);
-    this.mensajeExito.set(null);
+  /**
+   * Abre la consulta del turno: la consulta, sus diagnósticos y los tratamientos de cada uno.
+   * Con desdeCero = false (después de agregar algo) no muestra "Cargando..." ni mueve la pantalla.
+   */
+  verConsulta(turno: Turno, desdeCero = true): void {
     this.turnoEnRegistro.set(null);
     this.idDiagnosticoConFormulario.set(null);
-    this.nuevoDiagnostico = '';
     this.turnoAbierto.set(turno);
-    this.consulta.set(null);
-    this.diagnosticos.set([]);
-    this.cargandoConsulta.set(true);
+    if (desdeCero) {
+      this.nuevoDiagnostico = '';
+      this.consulta.set(null);
+      this.diagnosticos.set([]);
+      this.cargandoConsulta.set(true);
+      llevarA('panel-consulta');
+    }
 
     this.historialService
       .consultas()
@@ -233,7 +268,7 @@ export class HistorialComponent implements OnInit {
           this.cargandoConsulta.set(false);
         },
         error: (err) => {
-          this.mensajeError.set(mensajeDeError(err));
+          this.toast.error(mensajeDeError(err));
           this.cargandoConsulta.set(false);
         },
       });

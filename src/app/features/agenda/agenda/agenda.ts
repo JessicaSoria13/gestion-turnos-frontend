@@ -9,17 +9,17 @@ import {
   Disponibilidad,
   DisponibilidadRequest,
 } from '../../../core/models/agenda.model';
+import { ToastService } from '../../../core/services/toast.service';
 import { mensajeDeError } from '../../../core/utils/errores';
+import { llevarA } from '../../../core/utils/scroll';
 import { fechaLocal, formatearFecha } from '../../turnos/fechas';
 import { CampoFecha } from '../../../shared/campo-fecha/campo-fecha';
-
-/** Dónde se muestran los mensajes: arriba (carga general) o junto a la sección que se está usando. */
-type SeccionMensaje = 'general' | 'disponibilidad' | 'bloqueos';
 
 /**
  * Agenda del administrador (/admin/agenda).
  * Parte 1: disponibilidad semanal del médico (listar, cargar, editar y dar de baja).
  * Parte 2: bloqueos de fechas (vacaciones, feriados, licencias): listar, cargar y dar de baja.
+ * Los resultados se avisan con toasts; al tocar "Editar" la pantalla baja sola al formulario.
  */
 @Component({
   selector: 'app-agenda',
@@ -31,6 +31,7 @@ export class Agenda implements OnInit {
   private readonly medicoService = inject(MedicoService);
   private readonly disponibilidadService = inject(DisponibilidadService);
   private readonly bloqueoService = inject(BloqueoService);
+  private readonly toast = inject(ToastService);
 
   readonly dias: DiaSemana[] = [
     'LUNES',
@@ -46,9 +47,6 @@ export class Agenda implements OnInit {
   idMedico = signal<number | null>(null);
 
   disponibilidades = signal<Disponibilidad[]>([]);
-  mensajeError = signal<string | null>(null);
-  mensajeExito = signal<string | null>(null);
-  seccionMensaje = signal<SeccionMensaje>('general');
 
   // Formulario: si idEditando tiene un número, se está editando esa franja; si es null, se carga una nueva
   idEditando = signal<number | null>(null);
@@ -69,14 +67,14 @@ export class Agenda implements OnInit {
     this.medicoService.listar().subscribe({
       next: (medicos) => {
         if (medicos.length === 0) {
-          this.mensajeError.set('No hay ningún médico cargado');
+          this.toast.error('No hay ningún médico cargado');
           return;
         }
         this.idMedico.set(medicos[0].id);
         this.cargarDisponibilidades();
         this.cargarBloqueos();
       },
-      error: (err) => this.mensajeError.set(mensajeDeError(err)),
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
@@ -85,14 +83,13 @@ export class Agenda implements OnInit {
     if (idMedico === null) return;
     this.disponibilidadService.listar(idMedico).subscribe({
       next: (lista) => this.disponibilidades.set(this.ordenar(lista)),
-      error: (err) => this.mostrarError('disponibilidad', mensajeDeError(err)),
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
   guardar(): void {
     const idMedico = this.idMedico();
     if (idMedico === null) return;
-    this.limpiarMensajes('disponibilidad');
 
     const datos: DisponibilidadRequest = {
       idMedico,
@@ -110,23 +107,24 @@ export class Agenda implements OnInit {
 
     pedido.subscribe({
       next: () => {
-        this.mensajeExito.set(id === null ? 'Franja cargada' : 'Franja actualizada');
+        this.toast.exito(id === null ? 'Franja cargada' : 'Franja actualizada');
         this.cancelarEdicion();
         this.cargarDisponibilidades();
       },
       // Ej.: 409 "El médico ya tiene una disponibilidad que se solapa con ese horario"
-      error: (err) => this.mensajeError.set(mensajeDeError(err)),
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
   editar(d: Disponibilidad): void {
-    this.limpiarMensajes('disponibilidad');
     this.idEditando.set(d.id);
     this.diaSemana = d.diaSemana;
     // El backend devuelve "09:00:00"; el input de hora usa "09:00"
     this.horaInicio = d.horaInicio.slice(0, 5);
     this.horaFin = d.horaFin.slice(0, 5);
     this.duracionTurnoMin = d.duracionTurnoMin;
+    // El formulario está debajo de la tabla: se lleva la pantalla hasta ahí
+    llevarA('form-franja');
   }
 
   cancelarEdicion(): void {
@@ -140,13 +138,12 @@ export class Agenda implements OnInit {
   darDeBaja(d: Disponibilidad): void {
     const texto = `¿Dar de baja la franja del ${d.diaSemana} de ${this.hora(d.horaInicio)} a ${this.hora(d.horaFin)}?`;
     if (!confirm(texto)) return;
-    this.limpiarMensajes('disponibilidad');
     this.disponibilidadService.eliminar(d.id).subscribe({
       next: () => {
-        this.mensajeExito.set('Franja dada de baja');
+        this.toast.exito('Franja dada de baja');
         this.cargarDisponibilidades();
       },
-      error: (err) => this.mensajeError.set(mensajeDeError(err)),
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
@@ -159,17 +156,16 @@ export class Agenda implements OnInit {
       // Del más próximo al más lejano
       next: (lista) =>
         this.bloqueos.set([...lista].sort((a, b) => a.fechaDesde.localeCompare(b.fechaDesde))),
-      error: (err) => this.mostrarError('bloqueos', mensajeDeError(err)),
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
   guardarBloqueo(): void {
     const idMedico = this.idMedico();
     if (idMedico === null) return;
-    this.limpiarMensajes('bloqueos');
 
     if (this.fechaHasta < this.fechaDesde) {
-      this.mensajeError.set('La fecha "hasta" no puede ser anterior a la fecha "desde"');
+      this.toast.error('La fecha "hasta" no puede ser anterior a la fecha "desde"');
       return;
     }
 
@@ -193,7 +189,7 @@ export class Agenda implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.mensajeExito.set(
+          this.toast.exito(
             'Bloqueo cargado. Los turnos confirmados de esas fechas se cancelaron.',
           );
           this.fechaDesde = this.hoy;
@@ -201,20 +197,19 @@ export class Agenda implements OnInit {
           this.motivoBloqueo = '';
           this.cargarBloqueos();
         },
-        error: (err) => this.mensajeError.set(mensajeDeError(err)),
+        error: (err) => this.toast.error(mensajeDeError(err)),
       });
   }
 
   darDeBajaBloqueo(b: Bloqueo): void {
     const texto = `¿Quitar el bloqueo "${b.motivo}"? Esas fechas vuelven a estar libres, pero los turnos cancelados no se recuperan.`;
     if (!confirm(texto)) return;
-    this.limpiarMensajes('bloqueos');
     this.bloqueoService.eliminar(b.id).subscribe({
       next: () => {
-        this.mensajeExito.set('Bloqueo dado de baja');
+        this.toast.exito('Bloqueo dado de baja');
         this.cargarBloqueos();
       },
-      error: (err) => this.mensajeError.set(mensajeDeError(err)),
+      error: (err) => this.toast.error(mensajeDeError(err)),
     });
   }
 
@@ -229,17 +224,5 @@ export class Agenda implements OnInit {
         this.dias.indexOf(a.diaSemana) - this.dias.indexOf(b.diaSemana) ||
         a.horaInicio.localeCompare(b.horaInicio),
     );
-  }
-
-  /** Borra los mensajes anteriores y deja anotado en qué sección se van a mostrar los nuevos. */
-  private limpiarMensajes(seccion: SeccionMensaje): void {
-    this.mensajeError.set(null);
-    this.mensajeExito.set(null);
-    this.seccionMensaje.set(seccion);
-  }
-
-  private mostrarError(seccion: SeccionMensaje, mensaje: string): void {
-    this.seccionMensaje.set(seccion);
-    this.mensajeError.set(mensaje);
   }
 }

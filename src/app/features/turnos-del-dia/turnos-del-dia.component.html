@@ -1,0 +1,135 @@
+<section class="tarjeta">
+  <p class="identificador">Administración</p>
+  <h2>{{ titulo() }}</h2>
+
+  <div class="selector-dia">
+    <button
+      type="button"
+      class="btn btn-secundario"
+      (click)="moverDia(-1)"
+      aria-label="Día anterior"
+    >
+      ‹ Anterior
+    </button>
+    <div class="campo campo-dia">
+      <label for="fechaAgenda">Fecha</label>
+      <app-campo-fecha
+        idInput="fechaAgenda"
+        name="fechaAgenda"
+        [ngModel]="fecha()"
+        (ngModelChange)="cambiarFecha($event)"
+      />
+    </div>
+    <button
+      type="button"
+      class="btn btn-secundario"
+      (click)="moverDia(1)"
+      aria-label="Día siguiente"
+    >
+      Siguiente ›
+    </button>
+    @if (fecha() !== hoy) {
+      <button type="button" class="btn btn-secundario" (click)="irAHoy()">Hoy</button>
+    }
+  </div>
+
+  @if (todos() === null) {
+    <p>Cargando...</p>
+  } @else if (turnosDelDia().length === 0) {
+    <p class="sin-turnos">No hay turnos para el {{ formatearFecha(fecha()) }}.</p>
+  } @else {
+    <p class="resumen">{{ resumen() }}</p>
+
+    <div class="tabla-contenedor">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Hora</th>
+            <th>Paciente</th>
+            <th>Motivo</th>
+            <th>Cobertura</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of turnosDelDia(); track t.id) {
+            <tr [class.elegido]="idCancelando() === t.id">
+              <td class="hora">{{ t.hora.slice(0, 5) }}</td>
+              <td>
+                {{ nombrePaciente(t) }}
+                @if (dniPaciente(t); as dni) {
+                  <div class="detalle-chico">DNI {{ dni }}</div>
+                }
+              </td>
+              <td>{{ t.motivoConsulta || '-' }}</td>
+              <td>{{ t.idCobertura ? 'Con cobertura' : 'Particular' }}</td>
+              <td>
+                <span [class]="'estado ' + t.estado.toLowerCase()">{{ t.estado }}</span>
+                @if (t.motivoCancelacion) {
+                  <div class="motivo">{{ t.motivoCancelacion }}</div>
+                }
+              </td>
+              <td class="acciones">
+                @if (puedeAtender(t)) {
+                  <button type="button" class="btn btn-primario" (click)="irAlHistorial(t)">
+                    Registrar atención
+                  </button>
+                }
+                @if (t.estado === 'ATENDIDO') {
+                  <button type="button" class="btn btn-secundario" (click)="irAlHistorial(t)">
+                    Ver consulta
+                  </button>
+                }
+                @if (puedeCancelar(t) && idCancelando() !== t.id) {
+                  <button type="button" class="btn btn-secundario" (click)="pedirCancelacion(t)">
+                    Cancelar
+                  </button>
+                }
+              </td>
+            </tr>
+
+            @if (idCancelando() === t.id) {
+              <tr class="fila-cancelar destino-scroll" id="cancelar-{{ t.id }}">
+                <td colspan="6">
+                  <div class="campo">
+                    <label for="motivo-{{ t.id }}">
+                      ¿Cancelar el turno de {{ nombrePaciente(t) }} a las {{ t.hora.slice(0, 5) }}?
+                      Motivo (obligatorio, lo ve el paciente):
+                    </label>
+                    <textarea
+                      id="motivo-{{ t.id }}"
+                      name="motivo"
+                      [(ngModel)]="motivoCancelacion"
+                      maxlength="255"
+                      rows="2"
+                      placeholder="Ej.: la médica tuvo una urgencia"
+                    ></textarea>
+                  </div>
+                  <div class="acciones">
+                    <button
+                      type="button"
+                      class="btn btn-primario"
+                      [disabled]="cancelando() || motivoCancelacion.trim() === ''"
+                      (click)="confirmarCancelacion(t)"
+                    >
+                      {{ cancelando() ? 'Cancelando...' : 'Sí, cancelar turno' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secundario"
+                      [disabled]="cancelando()"
+                      (click)="volver()"
+                    >
+                      No, volver
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

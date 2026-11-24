@@ -4,13 +4,18 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Cobertura, Financiador, Paciente } from '../models/turno.model';
 
-/** Datos del paciente logueado que se necesitan para reservar: su ficha y sus coberturas. */
+/** Pacientes: la lista completa (administrador) y, para reservar, la ficha y las coberturas del paciente logueado. */
 @Injectable({
   providedIn: 'root',
 })
 export class PacienteService {
   private readonly http = inject(HttpClient);
   private readonly api = environment.apiUrl;
+
+  /** GET /pacientes (solo ADMINISTRADOR): todos los pacientes activos. */
+  listar(): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.api}/pacientes`);
+  }
 
   /** GET /pacientes/me (solo PACIENTE): la ficha del paciente logueado (se obtiene por el DNI del token). */
   obtenerPropio(): Observable<Paciente> {
