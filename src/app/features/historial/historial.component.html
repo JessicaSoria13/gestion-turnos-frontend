@@ -2,7 +2,7 @@
   <p class="identificador">Administración</p>
   <h2>Historial clínico</h2>
 
-  @if (mensajeError()) {
+  @if (mensajeError() && !turnoAbierto() && !turnoEnRegistro()) {
     <p class="mensaje-error">{{ mensajeError() }}</p>
   }
 
@@ -23,41 +23,86 @@
       <p>Este paciente todavía no tiene turnos.</p>
     } @else {
       <div class="tabla-contenedor">
-      <table class="tabla">
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Motivo</th>
-            <th>Estado</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (t of turnos(); track t.id) {
-            <tr [class.elegido]="turnoAbierto()?.id === t.id">
-              <td>{{ formatearFecha(t.fecha) }}</td>
-              <td>{{ t.hora.slice(0, 5) }}</td>
-              <td>{{ t.motivoConsulta || '-' }}</td>
-              <td>
-                <span [class]="'estado ' + t.estado.toLowerCase()">{{ t.estado }}</span>
-                @if (t.motivoCancelacion) {
-                  <div class="motivo">{{ t.motivoCancelacion }}</div>
-                }
-              </td>
-              <td class="acciones">
-                @if (t.estado === 'ATENDIDO') {
-                  <button type="button" class="btn btn-secundario" (click)="verConsulta(t)">
-                    Ver consulta
-                  </button>
-                }
-              </td>
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Motivo</th>
+              <th>Estado</th>
+              <th></th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (t of turnos(); track t.id) {
+              <tr [class.elegido]="turnoAbierto()?.id === t.id || turnoEnRegistro()?.id === t.id">
+                <td>{{ formatearFecha(t.fecha) }}</td>
+                <td>{{ t.hora.slice(0, 5) }}</td>
+                <td>{{ t.motivoConsulta || '-' }}</td>
+                <td>
+                  <span [class]="'estado ' + t.estado.toLowerCase()">{{ t.estado }}</span>
+                  @if (t.motivoCancelacion) {
+                    <div class="motivo">{{ t.motivoCancelacion }}</div>
+                  }
+                </td>
+                <td class="acciones">
+                  @if (t.estado === 'ATENDIDO') {
+                    <button type="button" class="btn btn-secundario" (click)="verConsulta(t)">
+                      Ver consulta
+                    </button>
+                  } @else if (puedeRegistrarAtencion(t)) {
+                    <button type="button" class="btn btn-primario" (click)="abrirRegistro(t)">
+                      Registrar atención
+                    </button>
+                  } @else if (t.estado === 'CONFIRMADO') {
+                    <span class="aviso-futuro"
+                      >Se atiende desde el {{ formatearFecha(t.fecha) }}</span
+                    >
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
     }
+  }
+
+  @if (turnoEnRegistro(); as turno) {
+    <div class="detalle">
+      <div class="detalle-encabezado">
+        <h3>
+          Registrar atención del {{ formatearFecha(turno.fecha) }} a las
+          {{ turno.hora.slice(0, 5) }}
+        </h3>
+        <button type="button" class="btn btn-secundario" (click)="cancelarRegistro()">
+          Cancelar
+        </button>
+      </div>
+
+      <form class="formulario alta" #formAtencion="ngForm" (ngSubmit)="registrarAtencion()">
+        <div class="campo">
+          <label for="observaciones">Observaciones</label>
+          <textarea
+            id="observaciones"
+            name="observaciones"
+            [(ngModel)]="observaciones"
+            rows="3"
+            placeholder="Ej.: paciente estable, control en 6 meses"
+          ></textarea>
+          <span class="ayuda-campo">Al guardar, el turno pasa a ATENDIDO.</span>
+        </div>
+        <div class="acciones">
+          <button type="submit" class="btn btn-primario" [disabled]="guardando()">
+            Guardar atención
+          </button>
+        </div>
+      </form>
+
+      @if (mensajeError()) {
+        <p class="mensaje-error">{{ mensajeError() }}</p>
+      }
+    </div>
   }
 
   @if (turnoAbierto(); as turno) {
@@ -66,6 +111,13 @@
         <h3>Consulta del {{ formatearFecha(turno.fecha) }} a las {{ turno.hora.slice(0, 5) }}</h3>
         <button type="button" class="btn btn-secundario" (click)="cerrarConsulta()">Cerrar</button>
       </div>
+
+      @if (mensajeError()) {
+        <p class="mensaje-error">{{ mensajeError() }}</p>
+      }
+      @if (mensajeExito()) {
+        <p class="mensaje-exito">{{ mensajeExito() }}</p>
+      }
 
       @if (cargandoConsulta()) {
         <p>Cargando...</p>
@@ -97,8 +149,90 @@
                 }
               </ul>
             }
+
+            @if (idDiagnosticoConFormulario() === d.diagnostico.id) {
+              <form
+                class="formulario fila alta"
+                #formTratamiento="ngForm"
+                (ngSubmit)="agregarTratamiento()"
+              >
+                <div class="campo">
+                  <label for="tratamientoDescripcion">Tratamiento</label>
+                  <input
+                    type="text"
+                    id="tratamientoDescripcion"
+                    name="tratamientoDescripcion"
+                    [(ngModel)]="tratamientoDescripcion"
+                    placeholder="Ej.: ibuprofeno 400 mg cada 8 h"
+                    required
+                  />
+                </div>
+                <div class="campo duracion">
+                  <label for="tratamientoDuracion">Duración</label>
+                  <input
+                    type="text"
+                    id="tratamientoDuracion"
+                    name="tratamientoDuracion"
+                    [(ngModel)]="tratamientoDuracion"
+                    maxlength="50"
+                    placeholder="Ej.: 7 días"
+                  />
+                </div>
+                <div class="acciones">
+                  <button
+                    type="submit"
+                    class="btn btn-primario"
+                    [disabled]="formTratamiento.invalid || guardando()"
+                  >
+                    Guardar
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secundario"
+                    (click)="cerrarFormularioTratamiento()"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            } @else {
+              <button
+                type="button"
+                class="btn btn-secundario agregar"
+                (click)="abrirFormularioTratamiento(d.diagnostico.id)"
+              >
+                + Agregar tratamiento
+              </button>
+            }
           </div>
         }
+
+        <form
+          class="formulario fila alta"
+          #formDiagnostico="ngForm"
+          (ngSubmit)="agregarDiagnostico()"
+        >
+          <div class="campo">
+            <label for="nuevoDiagnostico">Nuevo diagnóstico</label>
+            <input
+              type="text"
+              id="nuevoDiagnostico"
+              name="nuevoDiagnostico"
+              [(ngModel)]="nuevoDiagnostico"
+              placeholder="Ej.: faringitis aguda"
+              required
+            />
+          </div>
+          <div class="acciones">
+            <button
+              type="submit"
+              class="btn btn-primario"
+              [disabled]="formDiagnostico.invalid || guardando()"
+            >
+              Agregar diagnóstico
+            </button>
+          </div>
+        </form>
       }
     </div>
   }

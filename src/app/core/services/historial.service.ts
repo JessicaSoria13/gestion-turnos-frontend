@@ -6,7 +6,8 @@ import { Paciente, Turno } from '../models/turno.model';
 import { ConsultaMedica, Diagnostico, Tratamiento } from '../models/historial.model';
 
 /**
- * Historial clínico, solo ADMINISTRADOR (/admin/historial). Solo lectura.
+ * Historial clínico, solo ADMINISTRADOR (/admin/historial).
+ * Consulta la cadena turno → consulta → diagnósticos → tratamientos y permite cargarla.
  * El token lo agrega el interceptor.
  */
 @Injectable({
@@ -40,5 +41,34 @@ export class HistorialService {
   tratamientosDeDiagnostico(idDiagnostico: number): Observable<Tratamiento[]> {
     const params = new HttpParams().set('idDiagnostico', idDiagnostico);
     return this.http.get<Tratamiento[]>(`${this.api}/tratamientos`, { params });
+  }
+
+  /**
+   * POST /consultas-medicas: registra la atención de un turno. El turno pasa a ATENDIDO.
+   * Errores posibles: 409 (el turno no está CONFIRMADO, su fecha todavía no llegó o ya tiene consulta).
+   */
+  registrarConsulta(idTurno: number, observaciones: string | null): Observable<ConsultaMedica> {
+    return this.http.post<ConsultaMedica>(`${this.api}/consultas-medicas`, {
+      idTurno,
+      observaciones,
+    });
+  }
+
+  /** POST /diagnosticos: agrega un diagnóstico a una consulta. */
+  agregarDiagnostico(idConsulta: number, descripcion: string): Observable<Diagnostico> {
+    return this.http.post<Diagnostico>(`${this.api}/diagnosticos`, { idConsulta, descripcion });
+  }
+
+  /** POST /tratamientos: agrega un tratamiento a un diagnóstico (arranca EN_CURSO). */
+  agregarTratamiento(
+    idDiagnostico: number,
+    descripcion: string,
+    duracion: string | null,
+  ): Observable<Tratamiento> {
+    return this.http.post<Tratamiento>(`${this.api}/tratamientos`, {
+      idDiagnostico,
+      descripcion,
+      duracion,
+    });
   }
 }
