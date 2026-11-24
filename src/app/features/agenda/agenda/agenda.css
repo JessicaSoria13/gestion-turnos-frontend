@@ -1,5 +1,5 @@
-/* .tarjeta, .tabla, .formulario.fila, .campo, .btn, .acciones, .ayuda y los mensajes
-   son globales (src/styles.css). Acá solo lo propio de la agenda. */
+/* .tarjeta, .tabla, .formulario.fila, .campo, .btn, .acciones y .ayuda
+   son globales (src/styles.css). Los avisos son toasts. Acá solo lo propio de la agenda. */
 .tarjeta {
   max-width: 900px;
 }
@@ -7,11 +7,4 @@
 /* El campo "Motivo" de los bloqueos es más ancho que los de fecha */
 .formulario.fila .campo.motivo {
   flex: 2 1 240px;
-}
-
-/* Mensajes de cada parte, debajo de su formulario */
-.formulario + .mensaje-error,
-.formulario + .mensaje-exito,
-.formulario + .mensaje-exito + .mensaje-error {
-  margin-top: 16px;
 }

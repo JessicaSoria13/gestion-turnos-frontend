@@ -792,3 +792,9 @@ td > .motivo {
     font-size: 24px;
   }
 }
+
+/* Panel o formulario al que se lleva la pantalla cuando se abre (ver core/utils/scroll.ts):
+   deja un poco de aire arriba para que no quede pegado al borde */
+.destino-scroll {
+  scroll-margin-top: 16px;
+}

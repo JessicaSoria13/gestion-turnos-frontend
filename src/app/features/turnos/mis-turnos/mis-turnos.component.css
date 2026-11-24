@@ -1,12 +1,7 @@
-/* .tarjeta, .tabla, .tabla-contenedor, .campo, .btn, los chips de .estado y los mensajes
-   son globales (src/styles.css). Acá solo lo propio de mis turnos. */
+/* .tarjeta, .tabla, .tabla-contenedor, .campo, .btn y los chips de .estado son globales
+   (src/styles.css). Los avisos son toasts. Acá solo lo propio de mis turnos. */
 .tarjeta {
   max-width: 860px;
-}
-
-.mensaje-error,
-.mensaje-exito {
-  margin-bottom: 16px;
 }
 
 /* Fila que se abre abajo de un turno para confirmar la cancelación */

@@ -2,13 +2,6 @@
   <p class="identificador">Administración</p>
   <h2>Pacientes</h2>
 
-  @if (mensajeError()) {
-    <p class="mensaje-error">{{ mensajeError() }}</p>
-  }
-  @if (mensajeExito()) {
-    <p class="mensaje-exito">{{ mensajeExito() }}</p>
-  }
-
   @if (pacientes().length === 0) {
     <p>No hay pacientes cargados.</p>
   } @else {
@@ -43,7 +36,7 @@
   }
 
   @if (seleccionado(); as paciente) {
-    <h3>Coberturas de {{ paciente.nombreApellido }}</h3>
+    <h3 class="destino-scroll" id="coberturas-paciente">Coberturas de {{ paciente.nombreApellido }}</h3>
 
     @if (coberturas().length === 0) {
       <p>No tiene coberturas: se atiende como particular.</p>

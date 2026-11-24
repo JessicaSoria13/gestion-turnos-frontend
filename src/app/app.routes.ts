@@ -8,6 +8,7 @@ import { ReservarTurnoComponent } from './features/turnos/reservar-turno/reserva
 import { MisTurnosComponent } from './features/turnos/mis-turnos/mis-turnos.component';
 import { PacientesComponent } from './features/pacientes/pacientes.component';
 import { HistorialComponent } from './features/historial/historial.component';
+import { TurnosDelDiaComponent } from './features/turnos-del-dia/turnos-del-dia.component';
 
 /**
  * Rutas del Frontend.
@@ -37,6 +38,7 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [rolGuard('ADMINISTRADOR')],
     children: [
+      { path: 'turnos', component: TurnosDelDiaComponent },
       { path: 'agenda', component: Agenda },
       { path: 'pacientes', component: PacientesComponent },
       { path: 'historial', component: HistorialComponent },

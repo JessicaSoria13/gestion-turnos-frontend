@@ -15,6 +15,11 @@ export class TurnoService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/turnos`;
 
+  /** GET /turnos (solo ADMINISTRADOR): todos los turnos del consultorio, de cualquier estado. */
+  listar(): Observable<Turno[]> {
+    return this.http.get<Turno[]>(this.url);
+  }
+
   /** GET /turnos/mis-turnos (solo PACIENTE): los turnos del paciente logueado. */
   misTurnos(): Observable<Turno[]> {
     return this.http.get<Turno[]>(`${this.url}/mis-turnos`);
@@ -28,7 +33,10 @@ export class TurnoService {
     return this.http.post<Turno>(this.url, datos);
   }
 
-  /** PUT /turnos/{id}/cancelar. Error posible: 409 (el turno ya estaba cancelado o atendido). */
+  /**
+   * PUT /turnos/{id}/cancelar. Error posible: 409 (el turno ya estaba cancelado o atendido).
+   * Si cancela el ADMINISTRADOR (el médico), el motivo es obligatorio: si falta, 400.
+   */
   cancelar(id: number, datos: TurnoCancelacionRequest): Observable<Turno> {
     return this.http.put<Turno>(`${this.url}/${id}/cancelar`, datos);
   }

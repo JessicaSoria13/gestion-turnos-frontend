@@ -4,10 +4,6 @@
   max-width: 900px;
 }
 
-.mensaje-error {
-  margin-bottom: 16px;
-}
-
 /* Desplegable de paciente */
 .selector {
   max-width: 420px;
@@ -79,11 +75,6 @@
 
 .agregar {
   margin-top: 10px;
-}
-
-.detalle .mensaje-error,
-.detalle .mensaje-exito {
-  margin: 12px 0 0;
 }
 
 /* Turno confirmado cuya fecha todavía no llegó */

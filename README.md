@@ -43,17 +43,20 @@ src/app/
 │   ├── interceptors/          # jwt.interceptor.ts: agrega el token y maneja el 401
 │   ├── models/                # Interfaces de los DTOs del backend (auth.model.ts, ...)
 │   ├── services/              # Un servicio por recurso del backend (auth.service.ts, ...)
-│   └── utils/errores.ts       # mensajeDeError(): muestra el "mensaje" del ErrorResponse del backend
+│   │                          # + toast.service.ts: avisos flotantes de éxito o error
+│   └── utils/                 # errores.ts: mensajeDeError() · scroll.ts: llevarA(id) baja al panel abierto
 ├── features/                  # Pantallas, una carpeta por módulo
 │   ├── auth/login/            # Login con DNI, contraseña y elección de rol
 │   ├── auth/registro/         # Registro de paciente (POST /auth/register)
 │   ├── auth/recuperar-contrasena/  # Pedir código por email y cambiar la contraseña
+│   ├── turnos-del-dia/        # Administrador: turnos de una fecha (hoy por defecto), atender y cancelar
 │   ├── agenda/                # Administrador: disponibilidad semanal y bloqueos
 │   ├── pacientes/             # Administrador: pacientes y sus coberturas
 │   ├── historial/             # Administrador: turnos, consultas, diagnósticos y tratamientos
 │   └── turnos/                # Paciente: reservar turno y mis turnos (+ fechas.ts)
 ├── shared/                    # Componentes reutilizables
 │   ├── campo-fecha/           # Campo de fecha dd/mm/aaaa con calendario
+│   ├── toasts/                # Muestra los avisos de ToastService abajo a la izquierda
 │   └── layout-acceso/         # Panel azul + tarjeta de login, registro y recuperar contraseña
 ├── app.ts / app.html          # Encabezado con menú según el rol y Cerrar sesión
 ├── app.routes.ts              # Rutas: /paciente/... solo PACIENTE, /admin/... solo ADMINISTRADOR
@@ -68,7 +71,11 @@ src/app/
 3. Agregar la ruta en `app.routes.ts`, dentro de `paciente` o `admin` según quién la usa (así queda
    protegida por `rolGuard`), y el link en `ENLACES_POR_ROL` de `app.ts`.
 4. Usar las clases globales de `src/styles.css` (`.tarjeta`, `.identificador`, `.campo`, `.btn`,
-   `.tabla`, ...) y mostrar los errores con `mensajeDeError(err)` en `.mensaje-error` / `.mensaje-exito`.
+   `.tabla`, ...). El resultado de cada acción se avisa con `ToastService`:
+   `toast.exito('Cobertura agregada')` o `toast.error(mensajeDeError(err))`. Aparece abajo a la
+   izquierda, se esté viendo la parte de la pantalla que sea.
+5. Si al tocar un botón se abre un panel o formulario más abajo, darle un `id` y la clase
+   `destino-scroll`, y llamar a `llevarA('ese-id')` para que la pantalla baje sola hasta ahí.
 
 ## Comandos
 
