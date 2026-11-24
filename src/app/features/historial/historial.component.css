@@ -57,3 +57,37 @@
   font-weight: 600;
   color: var(--texto-secundario);
 }
+
+/* Formularios de alta dentro del recuadro (atención, diagnóstico, tratamiento) */
+.alta {
+  margin-top: 16px;
+}
+
+.alta .campo.duracion {
+  flex: 0 1 160px;
+}
+
+.alta .acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.alta textarea {
+  height: auto;
+  padding: 12px 16px;
+}
+
+.agregar {
+  margin-top: 10px;
+}
+
+.detalle .mensaje-error,
+.detalle .mensaje-exito {
+  margin: 12px 0 0;
+}
+
+/* Turno confirmado cuya fecha todavía no llegó */
+.aviso-futuro {
+  font-size: 12px;
+  color: var(--texto-secundario);
+}
